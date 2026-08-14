@@ -44,6 +44,8 @@ class Prefs(context: Context) {
     private val AUTO_SORT_HOME_APPS = "AUTO_SORT_HOME_APPS"
     private val SHOW_APP_OPEN_COUNT = "SHOW_APP_OPEN_COUNT"
     private val SHOW_UNLOCK_COUNT = "SHOW_UNLOCK_COUNT"
+    private val MINDFUL_APPS = "MINDFUL_APPS"
+    private val MINDFUL_PAUSE_SECONDS = "MINDFUL_PAUSE_SECONDS"
     private val LAUNCHER_RESTART_TIMESTAMP = "LAUNCHER_RECREATE_TIMESTAMP"
     private val SHOWN_ON_DAY_OF_YEAR = "SHOWN_ON_DAY_OF_YEAR"
     // Home button for recents feature disabled
@@ -255,6 +257,14 @@ class Prefs(context: Context) {
     var showUnlockCount: Boolean
         get() = prefs.getBoolean(SHOW_UNLOCK_COUNT, false)
         set(value) = prefs.edit { putBoolean(SHOW_UNLOCK_COUNT, value).apply() }
+
+    var mindfulApps: MutableSet<String>
+        get() = prefs.getStringSet(MINDFUL_APPS, mutableSetOf()) as MutableSet<String>
+        set(value) = prefs.edit { putStringSet(MINDFUL_APPS, value).apply() }
+
+    var mindfulPauseSeconds: Int
+        get() = prefs.getInt(MINDFUL_PAUSE_SECONDS, 0)
+        set(value) = prefs.edit { putInt(MINDFUL_PAUSE_SECONDS, value).apply() }
 
     var launcherRestartTimestamp: Long
         get() = prefs.getLong(LAUNCHER_RESTART_TIMESTAMP, 0L)

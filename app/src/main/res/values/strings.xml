@@ -166,6 +166,13 @@
     <string name="app_open_count">App open count</string>
     <string name="unlock_count">Unlock count</string>
     <string name="unlocks_count">%1$d unlocks</string>
+    <string name="mindful_pause">Mindful pause</string>
+    <string name="mindful_apps">Mindful apps</string>
+    <string name="cancel">Cancel</string>
+    <string name="take_a_breath">Take a breath… opening in %1$s</string>
+    <string name="added_to_mindful_pause">Added to mindful pause</string>
+    <string name="removed_from_mindful_pause">Removed from mindful pause</string>
+    <string name="pause_seconds" translatable="false">%1$ds</string>
     <string name="open_count_suffix" translatable="false">%1$dx</string>
     <string name="sort_apps_a_z">Sort apps A–Z</string>
     <string name="app_name_with_usage" translatable="false">%1$s · %2$s</string>

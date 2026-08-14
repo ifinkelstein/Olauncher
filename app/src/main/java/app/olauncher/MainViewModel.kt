@@ -67,6 +67,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     var isPrivateSpaceToggling = false
 
     val showDialog = SingleLiveEvent<String>()
+    val showMindfulPause = SingleLiveEvent<AppModel?>()
+    private var pendingLaunchApp: AppModel? = null
     val checkForMessages = SingleLiveEvent<Unit?>()
     val resetLauncherLiveData = SingleLiveEvent<Unit?>()
     // Home button for recents feature disabled
@@ -75,21 +77,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun selectedApp(appModel: AppModel, flag: Int) {
         if (appModel is AppModel.PrivateSpaceHeader) return
         when (flag) {
-            Constants.FLAG_LAUNCH_APP -> {
-                when (appModel) {
-                    is AppModel.PinnedShortcut -> launchShortcut(appModel)
-                    is AppModel.App ->
-                        launchApp(appModel.appPackage, appModel.activityClassName, appModel.user)
-
-                    else -> {}
-                }
-            }
+            Constants.FLAG_LAUNCH_APP -> launchOrPause(appModel)
 
             Constants.FLAG_HIDDEN_APPS -> {
-                if (appModel is AppModel.App) {
-                    launchApp(appModel.appPackage, appModel.activityClassName, appModel.user)
-                }
+                if (appModel is AppModel.App) launchOrPause(appModel)
             }
+
+            Constants.FLAG_TOGGLE_MINDFUL_APP -> toggleMindfulApp(appModel)
 
             Constants.FLAG_SET_HOME_APP_1 -> saveHomeApp(appModel, 1)
             Constants.FLAG_SET_HOME_APP_2 -> saveHomeApp(appModel, 2)
@@ -110,6 +104,54 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             Constants.FLAG_SET_CALENDAR_APP -> saveCalendarApp(appModel)
             Constants.FLAG_SET_SCREEN_TIME_APP -> saveScreenTimeApp(appModel)
         }
+    }
+
+    private fun launchOrPause(appModel: AppModel) {
+        val appPackage = when (appModel) {
+            is AppModel.App -> appModel.appPackage
+            is AppModel.PinnedShortcut -> appModel.appPackage
+            else -> return
+        }
+        if (prefs.mindfulPauseSeconds > 0 && prefs.mindfulApps.contains(appPackage)) {
+            pendingLaunchApp = appModel
+            showMindfulPause.postValue(appModel)
+            return
+        }
+        launchNow(appModel)
+    }
+
+    private fun launchNow(appModel: AppModel) {
+        when (appModel) {
+            is AppModel.PinnedShortcut -> launchShortcut(appModel)
+            is AppModel.App -> launchApp(appModel.appPackage, appModel.activityClassName, appModel.user)
+            else -> {}
+        }
+    }
+
+    fun proceedWithPendingLaunch() {
+        pendingLaunchApp?.let { launchNow(it) }
+        pendingLaunchApp = null
+    }
+
+    fun cancelPendingLaunch() {
+        pendingLaunchApp = null
+    }
+
+    private fun toggleMindfulApp(appModel: AppModel) {
+        val appPackage = when (appModel) {
+            is AppModel.App -> appModel.appPackage
+            is AppModel.PinnedShortcut -> appModel.appPackage
+            else -> return
+        }
+        val mindfulApps = mutableSetOf<String>().apply { addAll(prefs.mindfulApps) }
+        if (mindfulApps.contains(appPackage)) {
+            mindfulApps.remove(appPackage)
+            appContext.showToast(appContext.getString(R.string.removed_from_mindful_pause))
+        } else {
+            mindfulApps.add(appPackage)
+            appContext.showToast(appContext.getString(R.string.added_to_mindful_pause))
+        }
+        prefs.mindfulApps = mindfulApps
     }
 
     private fun launchShortcut(appModel: AppModel.PinnedShortcut) {

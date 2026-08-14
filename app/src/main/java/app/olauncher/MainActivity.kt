@@ -10,6 +10,7 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.provider.Settings
 import android.view.View
 import android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
@@ -20,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import app.olauncher.data.AppModel
 import app.olauncher.data.Constants
 import app.olauncher.data.Prefs
 import app.olauncher.databinding.ActivityMainBinding
@@ -88,7 +90,7 @@ class MainActivity : AppCompatActivity() {
                         // if you want other system/activity level handling
                     }
                 } else {
-                    binding.messageLayout.visibility = View.GONE
+                    dismissMindfulPause()
                 }
             }
         }
@@ -167,8 +169,42 @@ class MainActivity : AppCompatActivity() {
 
     private fun initClickListeners() {
         binding.ivClose.setOnClickListener {
-            binding.messageLayout.visibility = View.GONE
+            dismissMindfulPause()
         }
+    }
+
+    private var mindfulPauseTimer: CountDownTimer? = null
+
+    private fun showMindfulPauseDialog(appModel: AppModel) {
+        val appLabel = when (appModel) {
+            is AppModel.App -> appModel.appLabel
+            is AppModel.PinnedShortcut -> appModel.appLabel
+            else -> return
+        }
+        binding.tvTitle.text = appLabel
+        binding.tvAction.text = getString(R.string.cancel)
+        binding.tvAction.setOnClickListener { dismissMindfulPause() }
+        binding.messageLayout.visibility = View.VISIBLE
+        mindfulPauseTimer?.cancel()
+        mindfulPauseTimer = object : CountDownTimer(prefs.mindfulPauseSeconds * 1000L, 1000L) {
+            override fun onTick(millisUntilFinished: Long) {
+                binding.tvMessage.text =
+                    getString(R.string.take_a_breath, ((millisUntilFinished / 1000) + 1).toString())
+            }
+
+            override fun onFinish() {
+                mindfulPauseTimer = null
+                binding.messageLayout.visibility = View.GONE
+                viewModel.proceedWithPendingLaunch()
+            }
+        }.start()
+    }
+
+    private fun dismissMindfulPause() {
+        mindfulPauseTimer?.cancel()
+        mindfulPauseTimer = null
+        viewModel.cancelPendingLaunch()
+        binding.messageLayout.visibility = View.GONE
     }
 
     private fun initObservers(viewModel: MainViewModel) {
@@ -183,6 +219,9 @@ class MainActivity : AppCompatActivity() {
         }
         viewModel.checkForMessages.observe(this) {
             checkForMessages()
+        }
+        viewModel.showMindfulPause.observe(this) { appModel ->
+            appModel?.let { showMindfulPauseDialog(it) }
         }
         viewModel.showDialog.observe(this) {
             when (it) {

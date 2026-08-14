@@ -78,6 +78,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         populateAppUsageTime()
         populateAppOpenCount()
         populateUnlockCount()
+        populateMindfulPause()
         populateSortHomeApps()
         populateLockSettings()
         // Home button for recents feature disabled
@@ -121,6 +122,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             R.id.appUsageTime -> toggleAppUsageTime()
             R.id.appOpenCount -> toggleAppOpenCount()
             R.id.unlockCount -> toggleUnlockCount()
+            R.id.mindfulPause -> cycleMindfulPause()
+            R.id.mindfulApps -> showAppListIfEnabled(Constants.FLAG_TOGGLE_MINDFUL_APP)
             R.id.sortHomeApps -> toggleSortHomeApps()
             R.id.appInfo -> openAppInfo(requireContext(), Process.myUserHandle(), BuildConfig.APPLICATION_ID)
             R.id.setLauncher -> viewModel.resetLauncherLiveData.call()
@@ -236,6 +239,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.appUsageTime.setOnClickListener(this)
         binding.appOpenCount.setOnClickListener(this)
         binding.unlockCount.setOnClickListener(this)
+        binding.mindfulPause.setOnClickListener(this)
+        binding.mindfulApps.setOnClickListener(this)
         binding.sortHomeApps.setOnClickListener(this)
         binding.dailyWallpaperUrl.setOnClickListener(this)
         binding.dailyWallpaper.setOnClickListener(this)
@@ -637,6 +642,23 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         prefs.showUnlockCount = !prefs.showUnlockCount
         populateUnlockCount()
         viewModel.refreshHome(false)
+    }
+
+    private fun cycleMindfulPause() {
+        prefs.mindfulPauseSeconds = when (prefs.mindfulPauseSeconds) {
+            0 -> 3
+            3 -> 5
+            5 -> 10
+            else -> 0
+        }
+        populateMindfulPause()
+    }
+
+    private fun populateMindfulPause() {
+        binding.mindfulPause.text =
+            if (prefs.mindfulPauseSeconds == 0) getString(R.string.off)
+            else getString(R.string.pause_seconds, prefs.mindfulPauseSeconds)
+        binding.mindfulApps.text = prefs.mindfulApps.size.toString()
     }
 
     private fun populateUnlockCount() {
