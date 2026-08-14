@@ -354,6 +354,17 @@ class EventLogWrapper(private val context: Context) {
     fun aggregateSimpleUsageStats(usageStats: List<SimpleUsageStat>): Long {
         return usageStats.sumOf { it.timeUsed }
     }
+
+    /**
+     * Counts foreground sessions per package. Overlapping or adjacent component
+     * intervals of the same package are merged first, so one continuous use of an
+     * app counts as a single session.
+     */
+    fun aggregateSessionCounts(foregroundStats: List<ComponentForegroundStat>): Map<String, Int> {
+        return foregroundStats
+            .groupBy { it.packageName }
+            .mapValues { (_, stats) -> mergeOverlappingIntervals(stats).size }
+    }
     /**
      * Merges overlapping or adjacent time intervals to prevent double-counting
      * when multiple components of the same package have overlapping foreground times.

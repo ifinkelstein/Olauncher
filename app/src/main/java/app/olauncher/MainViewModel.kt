@@ -52,7 +52,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val launcherResetFailed = MutableLiveData<Boolean>()
     val homeAppAlignment = MutableLiveData<Int>()
     val screenTimeValue = MutableLiveData<String>()
-    val appUsageTimes = MutableLiveData<Map<String, Long>>()
+    val appUsageTimes = MutableLiveData<Map<String, AppDailyUsage>>()
+
+    data class AppDailyUsage(val timeUsed: Long, val openCount: Int)
 
     val privateSpaceApps = MutableLiveData<List<AppModel>?>()
     val privateSpaceLocked = MutableLiveData<Boolean>()
@@ -547,10 +549,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 set(Calendar.SECOND, 0)
                 set(Calendar.MILLISECOND, 0)
             }
-            val stats = eventLogWrapper.aggregateForegroundStats(
+            val foregroundStats =
                 eventLogWrapper.getForegroundStatsByTimestamps(calendar.timeInMillis, System.currentTimeMillis())
+            val timeStats = eventLogWrapper.aggregateForegroundStats(foregroundStats)
+            val sessionCounts = eventLogWrapper.aggregateSessionCounts(foregroundStats)
+            appUsageTimes.postValue(
+                timeStats.associate {
+                    it.applicationId to AppDailyUsage(it.timeUsed, sessionCounts[it.applicationId] ?: 0)
+                }
             )
-            appUsageTimes.postValue(stats.associate { it.applicationId to it.timeUsed })
         }
     }
 

@@ -76,6 +76,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         populateKeyboardText()
         populateScreenTimeOnOff()
         populateAppUsageTime()
+        populateAppOpenCount()
         populateSortHomeApps()
         populateLockSettings()
         // Home button for recents feature disabled
@@ -117,6 +118,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             R.id.moreFeatures -> viewModel.showDialog.postValue(Constants.Dialog.PRO_MESSAGE)
             R.id.screenTimeOnOff -> viewModel.showDialog.postValue(Constants.Dialog.DIGITAL_WELLBEING)
             R.id.appUsageTime -> toggleAppUsageTime()
+            R.id.appOpenCount -> toggleAppOpenCount()
             R.id.sortHomeApps -> toggleSortHomeApps()
             R.id.appInfo -> openAppInfo(requireContext(), Process.myUserHandle(), BuildConfig.APPLICATION_ID)
             R.id.setLauncher -> viewModel.resetLauncherLiveData.call()
@@ -230,6 +232,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.homeAppsNum.setOnClickListener(this)
         binding.screenTimeOnOff.setOnClickListener(this)
         binding.appUsageTime.setOnClickListener(this)
+        binding.appOpenCount.setOnClickListener(this)
         binding.sortHomeApps.setOnClickListener(this)
         binding.dailyWallpaperUrl.setOnClickListener(this)
         binding.dailyWallpaper.setOnClickListener(this)
@@ -602,6 +605,24 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             if (prefs.showAppUsageTime) binding.appUsageTime.text = getString(R.string.on)
             else binding.appUsageTime.text = getString(R.string.off)
         } else binding.appUsageTimeLayout.visibility = View.GONE
+    }
+
+    private fun toggleAppOpenCount() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
+        if (prefs.showAppOpenCount.not() && requireContext().appUsagePermissionGranted().not()) {
+            viewModel.showDialog.postValue(Constants.Dialog.DIGITAL_WELLBEING)
+            return
+        }
+        prefs.showAppOpenCount = !prefs.showAppOpenCount
+        populateAppOpenCount()
+        viewModel.refreshHome(false)
+    }
+
+    private fun populateAppOpenCount() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (prefs.showAppOpenCount) binding.appOpenCount.text = getString(R.string.on)
+            else binding.appOpenCount.text = getString(R.string.off)
+        } else binding.appOpenCountLayout.visibility = View.GONE
     }
 
     private fun populateKeyboardText() {

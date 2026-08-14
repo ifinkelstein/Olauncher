@@ -457,21 +457,27 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
 
     private fun refreshAppUsageTimes() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
-        if (prefs.showAppUsageTime.not()) return
+        if (prefs.showAppUsageTime.not() && prefs.showAppOpenCount.not()) return
         if (requireContext().appUsagePermissionGranted().not()) return
         viewModel.getTodaysAppUsage()
     }
 
-    private fun applyAppUsageTimes(usageTimes: Map<String, Long>) {
-        if (prefs.showAppUsageTime.not()) return
+    private fun applyAppUsageTimes(usageTimes: Map<String, MainViewModel.AppDailyUsage>) {
+        if (prefs.showAppUsageTime.not() && prefs.showAppOpenCount.not()) return
         for (location in 1..prefs.homeAppsNum) {
             val appName = prefs.getAppName(location)
             val appPackage = prefs.getAppPackage(location)
             if (appName.isEmpty() || appPackage.isEmpty()) continue
+            val usage = usageTimes[appPackage]
+            val suffixParts = mutableListOf<String>()
+            if (prefs.showAppUsageTime)
+                suffixParts.add(requireContext().formattedTimeSpent(usage?.timeUsed ?: 0L))
+            if (prefs.showAppOpenCount)
+                suffixParts.add(getString(R.string.open_count_suffix, usage?.openCount ?: 0))
             homeAppTextView(location)?.text = getString(
                 R.string.app_name_with_usage,
                 appName,
-                requireContext().formattedTimeSpent(usageTimes[appPackage] ?: 0L)
+                suffixParts.joinToString(" · ")
             )
         }
     }
