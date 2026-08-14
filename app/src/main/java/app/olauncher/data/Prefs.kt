@@ -40,6 +40,7 @@ class Prefs(context: Context) {
     private val PRO_MESSAGE_SHOWN = "PRO_MESSAGE_SHOWN"
     private val HIDE_SET_DEFAULT_LAUNCHER = "HIDE_SET_DEFAULT_LAUNCHER"
     private val SCREEN_TIME_LAST_UPDATED = "SCREEN_TIME_LAST_UPDATED"
+    private val SHOW_APP_USAGE_TIME = "SHOW_APP_USAGE_TIME"
     private val LAUNCHER_RESTART_TIMESTAMP = "LAUNCHER_RECREATE_TIMESTAMP"
     private val SHOWN_ON_DAY_OF_YEAR = "SHOWN_ON_DAY_OF_YEAR"
     // Home button for recents feature disabled
@@ -235,6 +236,10 @@ class Prefs(context: Context) {
     var screenTimeLastUpdated: Long
         get() = prefs.getLong(SCREEN_TIME_LAST_UPDATED, 0L)
         set(value) = prefs.edit { putLong(SCREEN_TIME_LAST_UPDATED, value).apply() }
+
+    var showAppUsageTime: Boolean
+        get() = prefs.getBoolean(SHOW_APP_USAGE_TIME, false)
+        set(value) = prefs.edit { putBoolean(SHOW_APP_USAGE_TIME, value).apply() }
 
     var launcherRestartTimestamp: Long
         get() = prefs.getLong(LAUNCHER_RESTART_TIMESTAMP, 0L)

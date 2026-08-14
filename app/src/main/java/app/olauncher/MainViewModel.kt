@@ -32,6 +32,7 @@ import app.olauncher.helper.isPackageInstalled
 import app.olauncher.helper.isPrivateSpaceLocked
 import app.olauncher.helper.showToast
 import app.olauncher.helper.usageStats.EventLogWrapper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
@@ -51,6 +52,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val launcherResetFailed = MutableLiveData<Boolean>()
     val homeAppAlignment = MutableLiveData<Int>()
     val screenTimeValue = MutableLiveData<String>()
+    val appUsageTimes = MutableLiveData<Map<String, Long>>()
 
     val privateSpaceApps = MutableLiveData<List<AppModel>?>()
     val privateSpaceLocked = MutableLiveData<Boolean>()
@@ -533,6 +535,23 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val viewTimeSpent = appContext.formattedTimeSpent(timeSpent)
         screenTimeValue.postValue(viewTimeSpent)
         prefs.screenTimeLastUpdated = endTime
+    }
+
+    fun getTodaysAppUsage() {
+        viewModelScope.launch(Dispatchers.Default) {
+            val eventLogWrapper = EventLogWrapper(appContext)
+            // Start of today in millis
+            val calendar = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+            val stats = eventLogWrapper.aggregateForegroundStats(
+                eventLogWrapper.getForegroundStatsByTimestamps(calendar.timeInMillis, System.currentTimeMillis())
+            )
+            appUsageTimes.postValue(stats.associate { it.applicationId to it.timeUsed })
+        }
     }
 
     fun getPrivateSpaceAppList() {

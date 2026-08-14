@@ -32,6 +32,7 @@ import app.olauncher.data.Prefs
 import app.olauncher.databinding.FragmentHomeBinding
 import app.olauncher.helper.appUsagePermissionGranted
 import app.olauncher.helper.dpToPx
+import app.olauncher.helper.formattedTimeSpent
 import app.olauncher.helper.expandNotificationDrawer
 import app.olauncher.helper.getChangedAppTheme
 import app.olauncher.helper.getUserHandleFromString
@@ -208,6 +209,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         viewModel.screenTimeValue.observe(viewLifecycleOwner) {
             it?.let { binding.tvScreenTime.text = it }
         }
+        viewModel.appUsageTimes.observe(viewLifecycleOwner) {
+            it?.let { applyAppUsageTimes(it) }
+        }
         // Home button for recents feature disabled
         // viewModel.showRecentApps.observe(viewLifecycleOwner) {
         //     binding.recents.performClick()
@@ -341,6 +345,8 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
             populateScreenTime()
 
+        refreshAppUsageTimes()
+
         val homeAppsNum = prefs.homeAppsNum
         if (homeAppsNum == 0) return
 
@@ -425,6 +431,45 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         if (!setHomeAppText(binding.homeApp12, prefs.appName12, prefs.appPackage12, prefs.appUser12, prefs.isShortcut12, prefs.shortcutId12)) {
             prefs.appName12 = ""
             prefs.appPackage12 = ""
+        }
+    }
+
+    private fun homeAppTextView(location: Int): TextView? {
+        return when (location) {
+            1 -> binding.homeApp1
+            2 -> binding.homeApp2
+            3 -> binding.homeApp3
+            4 -> binding.homeApp4
+            5 -> binding.homeApp5
+            6 -> binding.homeApp6
+            7 -> binding.homeApp7
+            8 -> binding.homeApp8
+            9 -> binding.homeApp9
+            10 -> binding.homeApp10
+            11 -> binding.homeApp11
+            12 -> binding.homeApp12
+            else -> null
+        }
+    }
+
+    private fun refreshAppUsageTimes() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
+        if (prefs.showAppUsageTime.not()) return
+        if (requireContext().appUsagePermissionGranted().not()) return
+        viewModel.getTodaysAppUsage()
+    }
+
+    private fun applyAppUsageTimes(usageTimes: Map<String, Long>) {
+        if (prefs.showAppUsageTime.not()) return
+        for (location in 1..prefs.homeAppsNum) {
+            val appName = prefs.getAppName(location)
+            val appPackage = prefs.getAppPackage(location)
+            if (appName.isEmpty() || appPackage.isEmpty()) continue
+            homeAppTextView(location)?.text = getString(
+                R.string.app_name_with_usage,
+                appName,
+                requireContext().formattedTimeSpent(usageTimes[appPackage] ?: 0L)
+            )
         }
     }
 

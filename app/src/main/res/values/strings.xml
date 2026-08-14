@@ -161,6 +161,8 @@
     <string name="are_you_using_your_phone_or_is_your_phone_using_you">Are you using your phone, or is your phone using you?</string>
     <string name="about_olauncher">About and FAQs</string>
     <string name="screen_time">Screen time</string>
+    <string name="app_usage_time">App usage time</string>
+    <string name="app_name_with_usage" translatable="false">%1$s · %2$s</string>
     <string name="learn_more">Learn more</string>
     <string name="did_you_know">Did you know?</string>
     <string name="leave_a_review">Leave a review</string>

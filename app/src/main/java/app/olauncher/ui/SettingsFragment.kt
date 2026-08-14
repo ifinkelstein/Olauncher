@@ -75,6 +75,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         populateProMessage()
         populateKeyboardText()
         populateScreenTimeOnOff()
+        populateAppUsageTime()
         populateLockSettings()
         // Home button for recents feature disabled
         // populateHomeButtonRecents()
@@ -114,6 +115,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             R.id.olauncherHiddenApps -> showHiddenApps()
             R.id.moreFeatures -> viewModel.showDialog.postValue(Constants.Dialog.PRO_MESSAGE)
             R.id.screenTimeOnOff -> viewModel.showDialog.postValue(Constants.Dialog.DIGITAL_WELLBEING)
+            R.id.appUsageTime -> toggleAppUsageTime()
             R.id.appInfo -> openAppInfo(requireContext(), Process.myUserHandle(), BuildConfig.APPLICATION_ID)
             R.id.setLauncher -> viewModel.resetLauncherLiveData.call()
             R.id.toggleLock -> toggleLockMode()
@@ -225,6 +227,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         // binding.homeButtonRecents.setOnClickListener(this)
         binding.homeAppsNum.setOnClickListener(this)
         binding.screenTimeOnOff.setOnClickListener(this)
+        binding.appUsageTime.setOnClickListener(this)
         binding.dailyWallpaperUrl.setOnClickListener(this)
         binding.dailyWallpaper.setOnClickListener(this)
         binding.alignment.setOnClickListener(this)
@@ -567,6 +570,24 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             if (requireContext().appUsagePermissionGranted()) binding.screenTimeOnOff.text = getString(R.string.on)
             else binding.screenTimeOnOff.text = getString(R.string.off)
         } else binding.screenTimeLayout.visibility = View.GONE
+    }
+
+    private fun toggleAppUsageTime() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
+        if (prefs.showAppUsageTime.not() && requireContext().appUsagePermissionGranted().not()) {
+            viewModel.showDialog.postValue(Constants.Dialog.DIGITAL_WELLBEING)
+            return
+        }
+        prefs.showAppUsageTime = !prefs.showAppUsageTime
+        populateAppUsageTime()
+        viewModel.refreshHome(false)
+    }
+
+    private fun populateAppUsageTime() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (prefs.showAppUsageTime) binding.appUsageTime.text = getString(R.string.on)
+            else binding.appUsageTime.text = getString(R.string.off)
+        } else binding.appUsageTimeLayout.visibility = View.GONE
     }
 
     private fun populateKeyboardText() {
