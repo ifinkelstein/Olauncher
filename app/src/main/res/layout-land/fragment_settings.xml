@@ -505,6 +505,28 @@
 
                 </FrameLayout>
 
+            </LinearLayout>
+
+            <!-- Wellbeing settings -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:background="@drawable/rounded_rect_shade_color"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    style="@style/TextLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/wellbeing"
+                    android:textColor="?attr/primaryColor" />
+
                 <FrameLayout
                     android:id="@+id/screenTimeLayout"
                     android:layout_width="match_parent"
@@ -531,7 +553,7 @@
                         android:layout_gravity="end|bottom"
                         android:layout_marginEnd="4dp"
                         android:padding="8dp"
-                        android:text="@string/left" />
+                        android:text="@string/off" />
 
                 </FrameLayout>
 
