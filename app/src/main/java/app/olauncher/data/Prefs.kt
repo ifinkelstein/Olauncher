@@ -47,6 +47,12 @@ class Prefs(context: Context) {
     private val MINDFUL_APPS = "MINDFUL_APPS"
     private val MINDFUL_PAUSE_SECONDS = "MINDFUL_PAUSE_SECONDS"
     private val BUDGETED_APPS = "BUDGETED_APPS"
+    private val NOW_ROW_MODE = "NOW_ROW_MODE"
+    private val NOW_ROW_APP_PACKAGE = "NOW_ROW_APP_PACKAGE"
+    private val NOW_ROW_APP_USER = "NOW_ROW_APP_USER"
+    private val NOW_ROW_APP_CLASS_NAME = "NOW_ROW_APP_CLASS_NAME"
+    private val NOW_WEATHER_CACHE = "NOW_WEATHER_CACHE"
+    private val NOW_WEATHER_CACHED_AT = "NOW_WEATHER_CACHED_AT"
     private val LAUNCHER_RESTART_TIMESTAMP = "LAUNCHER_RECREATE_TIMESTAMP"
     private val SHOWN_ON_DAY_OF_YEAR = "SHOWN_ON_DAY_OF_YEAR"
     // Home button for recents feature disabled
@@ -279,6 +285,30 @@ class Prefs(context: Context) {
         if (minutes > 0) budgeted.add(appPackage) else budgeted.remove(appPackage)
         budgetedApps = budgeted
     }
+
+    var nowRowMode: Int
+        get() = prefs.getInt(NOW_ROW_MODE, Constants.NowRow.OFF)
+        set(value) = prefs.edit { putInt(NOW_ROW_MODE, value).apply() }
+
+    var nowRowAppPackage: String
+        get() = prefs.getString(NOW_ROW_APP_PACKAGE, "").toString()
+        set(value) = prefs.edit { putString(NOW_ROW_APP_PACKAGE, value).apply() }
+
+    var nowRowAppUser: String
+        get() = prefs.getString(NOW_ROW_APP_USER, "").toString()
+        set(value) = prefs.edit { putString(NOW_ROW_APP_USER, value).apply() }
+
+    var nowRowAppClassName: String?
+        get() = prefs.getString(NOW_ROW_APP_CLASS_NAME, "").toString()
+        set(value) = prefs.edit { putString(NOW_ROW_APP_CLASS_NAME, value).apply() }
+
+    var nowWeatherCache: String
+        get() = prefs.getString(NOW_WEATHER_CACHE, "").toString()
+        set(value) = prefs.edit { putString(NOW_WEATHER_CACHE, value).apply() }
+
+    var nowWeatherCachedAt: Long
+        get() = prefs.getLong(NOW_WEATHER_CACHED_AT, 0L)
+        set(value) = prefs.edit { putLong(NOW_WEATHER_CACHED_AT, value).apply() }
 
     var launcherRestartTimestamp: Long
         get() = prefs.getLong(LAUNCHER_RESTART_TIMESTAMP, 0L)

@@ -179,6 +179,9 @@
     <string name="budget_exceeded_message">%1$s used of your %2$s daily budget</string>
     <string name="open_anyway">Open anyway</string>
     <string name="grayscale">Grayscale</string>
+    <string name="now_row">Now row</string>
+    <string name="calendar">Calendar</string>
+    <string name="weather">Weather</string>
     <string name="grayscale_permission_message">Permission needed. Run: adb shell pm grant %1$s android.permission.WRITE_SECURE_SETTINGS</string>
     <string name="open_count_suffix" translatable="false">%1$dx</string>
     <string name="sort_apps_a_z">Sort apps A–Z</string>

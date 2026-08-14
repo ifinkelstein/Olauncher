@@ -1,5 +1,6 @@
 package app.olauncher.ui
 
+import android.Manifest
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.Context
@@ -14,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -29,6 +31,8 @@ import app.olauncher.helper.animateAlpha
 import app.olauncher.helper.appUsagePermissionGranted
 import app.olauncher.helper.getColorFromAttr
 import app.olauncher.helper.isAccessServiceEnabled
+import app.olauncher.helper.hasCalendarPermission
+import app.olauncher.helper.hasLocationPermission
 import app.olauncher.helper.isDarkThemeOn
 import app.olauncher.helper.isEinkDisplay
 import app.olauncher.helper.isSystemGrayscale
@@ -56,6 +60,11 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
     private val showPentastic = System.currentTimeMillis() % 2 == 0L
     private var showInstagram = false
 
+    private val nowRowPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            viewModel.refreshHome(false)
+        }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         return binding.root
@@ -82,6 +91,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         populateUnlockCount()
         populateMindfulPause()
         populateGrayscale()
+        populateNowRow()
         populateSortHomeApps()
         populateLockSettings()
         // Home button for recents feature disabled
@@ -130,6 +140,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             R.id.appBudgets -> showAppListIfEnabled(Constants.FLAG_SET_BUDGET_APP)
             R.id.grayscale -> toggleGrayscale()
             R.id.sortHomeApps -> toggleSortHomeApps()
+            R.id.nowRow -> cycleNowRow()
             R.id.appInfo -> openAppInfo(requireContext(), Process.myUserHandle(), BuildConfig.APPLICATION_ID)
             R.id.setLauncher -> viewModel.resetLauncherLiveData.call()
             R.id.toggleLock -> toggleLockMode()
@@ -249,6 +260,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.appBudgets.setOnClickListener(this)
         binding.grayscale.setOnClickListener(this)
         binding.sortHomeApps.setOnClickListener(this)
+        binding.nowRow.setOnClickListener(this)
         binding.dailyWallpaperUrl.setOnClickListener(this)
         binding.dailyWallpaper.setOnClickListener(this)
         binding.alignment.setOnClickListener(this)
@@ -649,6 +661,35 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         prefs.showUnlockCount = !prefs.showUnlockCount
         populateUnlockCount()
         viewModel.refreshHome(false)
+    }
+
+    private fun cycleNowRow() {
+        prefs.nowRowMode = when (prefs.nowRowMode) {
+            Constants.NowRow.OFF -> Constants.NowRow.CALENDAR
+            Constants.NowRow.CALENDAR -> Constants.NowRow.WEATHER
+            else -> Constants.NowRow.OFF
+        }
+        populateNowRow()
+        when (prefs.nowRowMode) {
+            Constants.NowRow.CALENDAR ->
+                if (requireContext().hasCalendarPermission().not())
+                    nowRowPermissionLauncher.launch(Manifest.permission.READ_CALENDAR)
+
+            Constants.NowRow.WEATHER ->
+                if (requireContext().hasLocationPermission().not())
+                    nowRowPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+        }
+        viewModel.refreshHome(false)
+    }
+
+    private fun populateNowRow() {
+        binding.nowRow.text = getString(
+            when (prefs.nowRowMode) {
+                Constants.NowRow.CALENDAR -> R.string.calendar
+                Constants.NowRow.WEATHER -> R.string.weather
+                else -> R.string.off
+            }
+        )
     }
 
     private fun toggleGrayscale() {

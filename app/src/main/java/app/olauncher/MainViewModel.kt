@@ -26,6 +26,8 @@ import app.olauncher.helper.SingleLiveEvent
 import app.olauncher.helper.WallpaperWorker
 import app.olauncher.helper.formattedTimeSpent
 import app.olauncher.helper.getAppsList
+import app.olauncher.helper.getNextEventToday
+import app.olauncher.helper.getWeatherNow
 import app.olauncher.helper.getPrivateSpaceApps
 import app.olauncher.helper.getPrivateSpaceUserHandle
 import app.olauncher.helper.hasBeenMinutes
@@ -56,6 +58,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val screenTimeValue = MutableLiveData<String>()
     val appUsageTimes = MutableLiveData<Map<String, AppDailyUsage>>()
     val unlockCountValue = MutableLiveData<Int>()
+    val nowRowValue = MutableLiveData<String?>()
 
     data class AppDailyUsage(val timeUsed: Long, val openCount: Int)
 
@@ -87,6 +90,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
             Constants.FLAG_TOGGLE_MINDFUL_APP -> toggleMindfulApp(appModel)
             Constants.FLAG_SET_BUDGET_APP -> cycleAppBudget(appModel)
+            Constants.FLAG_SET_NOW_ROW_APP -> saveNowRowApp(appModel)
 
             Constants.FLAG_SET_HOME_APP_1 -> saveHomeApp(appModel, 1)
             Constants.FLAG_SET_HOME_APP_2 -> saveHomeApp(appModel, 2)
@@ -616,6 +620,25 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val viewTimeSpent = appContext.formattedTimeSpent(timeSpent)
         screenTimeValue.postValue(viewTimeSpent)
         prefs.screenTimeLastUpdated = endTime
+    }
+
+    fun getNowRowContent() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val content = when (prefs.nowRowMode) {
+                Constants.NowRow.CALENDAR -> appContext.getNextEventToday()
+                Constants.NowRow.WEATHER -> appContext.getWeatherNow(prefs)
+                else -> null
+            }
+            nowRowValue.postValue(content)
+        }
+    }
+
+    private fun saveNowRowApp(appModel: AppModel) {
+        if (appModel is AppModel.App) {
+            prefs.nowRowAppPackage = appModel.appPackage
+            prefs.nowRowAppUser = appModel.user.toString()
+            prefs.nowRowAppClassName = appModel.activityClassName
+        }
     }
 
     fun getTodaysUnlockCount() {

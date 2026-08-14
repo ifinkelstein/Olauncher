@@ -96,6 +96,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             R.id.date -> openCalendarApp()
             R.id.setDefaultLauncher -> viewModel.resetLauncherLiveData.call()
             R.id.tvScreenTime -> openScreenTimeDigitalWellbeing()
+            R.id.tvNowRow -> openNowRowApp()
 
             else -> {
                 try { // Launch app
@@ -167,6 +168,13 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
                 prefs.screenTimeAppUser = ""
             }
 
+            R.id.tvNowRow -> {
+                showAppList(Constants.FLAG_SET_NOW_ROW_APP)
+                prefs.nowRowAppPackage = ""
+                prefs.nowRowAppClassName = ""
+                prefs.nowRowAppUser = ""
+            }
+
             R.id.setDefaultLauncher -> {
                 prefs.hideSetDefaultLauncher = true
                 binding.setDefaultLauncher.visibility = View.GONE
@@ -215,6 +223,11 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         viewModel.unlockCountValue.observe(viewLifecycleOwner) {
             it?.let { binding.tvUnlockCount.text = getString(R.string.unlocks_count, it) }
         }
+        viewModel.nowRowValue.observe(viewLifecycleOwner) { content ->
+            binding.tvNowRow.isVisible =
+                prefs.nowRowMode != Constants.NowRow.OFF && content.isNullOrEmpty().not()
+            binding.tvNowRow.text = content.orEmpty()
+        }
         // Home button for recents feature disabled
         // viewModel.showRecentApps.observe(viewLifecycleOwner) {
         //     binding.recents.performClick()
@@ -250,6 +263,8 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         binding.setDefaultLauncher.setOnLongClickListener(this)
         binding.tvScreenTime.setOnClickListener(this)
         binding.tvScreenTime.setOnLongClickListener(this)
+        binding.tvNowRow.setOnClickListener(this)
+        binding.tvNowRow.setOnLongClickListener(this)
 
         // These fire only on d-pad/keyboard events; touch is consumed by ViewSwipeTouchListener
         binding.homeApp1.setOnClickListener(this)
@@ -350,6 +365,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
 
         refreshAppUsageTimes()
         refreshUnlockCount()
+        refreshNowRow()
 
         val homeAppsNum = prefs.homeAppsNum
         if (homeAppsNum == 0) return
@@ -456,6 +472,28 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             11 -> binding.homeApp11
             12 -> binding.homeApp12
             else -> null
+        }
+    }
+
+    private fun refreshNowRow() {
+        if (prefs.nowRowMode == Constants.NowRow.OFF) {
+            binding.tvNowRow.isVisible = false
+            return
+        }
+        viewModel.getNowRowContent()
+    }
+
+    private fun openNowRowApp() {
+        when {
+            prefs.nowRowAppPackage.isNotBlank() -> launchApp(
+                "Now",
+                prefs.nowRowAppPackage,
+                prefs.nowRowAppClassName,
+                prefs.nowRowAppUser
+            )
+
+            prefs.nowRowMode == Constants.NowRow.CALENDAR -> openCalendarApp()
+            else -> showLongPressToast()
         }
     }
 
