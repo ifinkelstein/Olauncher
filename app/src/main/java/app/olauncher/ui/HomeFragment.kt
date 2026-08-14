@@ -350,6 +350,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         val homeAppsNum = prefs.homeAppsNum
         if (homeAppsNum == 0) return
 
+        if (prefs.autoSortHomeApps)
+            prefs.sortHomeAppsAlphabetically(homeAppsNum)
+
         binding.homeApp1.visibility = View.VISIBLE
         if (!setHomeAppText(binding.homeApp1, prefs.appName1, prefs.appPackage1, prefs.appUser1, prefs.isShortcut1, prefs.shortcutId1)) {
             prefs.appName1 = ""

@@ -76,6 +76,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         populateKeyboardText()
         populateScreenTimeOnOff()
         populateAppUsageTime()
+        populateSortHomeApps()
         populateLockSettings()
         // Home button for recents feature disabled
         // populateHomeButtonRecents()
@@ -116,6 +117,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             R.id.moreFeatures -> viewModel.showDialog.postValue(Constants.Dialog.PRO_MESSAGE)
             R.id.screenTimeOnOff -> viewModel.showDialog.postValue(Constants.Dialog.DIGITAL_WELLBEING)
             R.id.appUsageTime -> toggleAppUsageTime()
+            R.id.sortHomeApps -> toggleSortHomeApps()
             R.id.appInfo -> openAppInfo(requireContext(), Process.myUserHandle(), BuildConfig.APPLICATION_ID)
             R.id.setLauncher -> viewModel.resetLauncherLiveData.call()
             R.id.toggleLock -> toggleLockMode()
@@ -228,6 +230,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.homeAppsNum.setOnClickListener(this)
         binding.screenTimeOnOff.setOnClickListener(this)
         binding.appUsageTime.setOnClickListener(this)
+        binding.sortHomeApps.setOnClickListener(this)
         binding.dailyWallpaperUrl.setOnClickListener(this)
         binding.dailyWallpaper.setOnClickListener(this)
         binding.alignment.setOnClickListener(this)
@@ -570,6 +573,17 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             if (requireContext().appUsagePermissionGranted()) binding.screenTimeOnOff.text = getString(R.string.on)
             else binding.screenTimeOnOff.text = getString(R.string.off)
         } else binding.screenTimeLayout.visibility = View.GONE
+    }
+
+    private fun toggleSortHomeApps() {
+        prefs.autoSortHomeApps = !prefs.autoSortHomeApps
+        populateSortHomeApps()
+        viewModel.refreshHome(false)
+    }
+
+    private fun populateSortHomeApps() {
+        if (prefs.autoSortHomeApps) binding.sortHomeApps.text = getString(R.string.on)
+        else binding.sortHomeApps.text = getString(R.string.off)
     }
 
     private fun toggleAppUsageTime() {

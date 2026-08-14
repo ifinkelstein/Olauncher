@@ -41,6 +41,7 @@ class Prefs(context: Context) {
     private val HIDE_SET_DEFAULT_LAUNCHER = "HIDE_SET_DEFAULT_LAUNCHER"
     private val SCREEN_TIME_LAST_UPDATED = "SCREEN_TIME_LAST_UPDATED"
     private val SHOW_APP_USAGE_TIME = "SHOW_APP_USAGE_TIME"
+    private val AUTO_SORT_HOME_APPS = "AUTO_SORT_HOME_APPS"
     private val LAUNCHER_RESTART_TIMESTAMP = "LAUNCHER_RECREATE_TIMESTAMP"
     private val SHOWN_ON_DAY_OF_YEAR = "SHOWN_ON_DAY_OF_YEAR"
     // Home button for recents feature disabled
@@ -240,6 +241,10 @@ class Prefs(context: Context) {
     var showAppUsageTime: Boolean
         get() = prefs.getBoolean(SHOW_APP_USAGE_TIME, false)
         set(value) = prefs.edit { putBoolean(SHOW_APP_USAGE_TIME, value).apply() }
+
+    var autoSortHomeApps: Boolean
+        get() = prefs.getBoolean(AUTO_SORT_HOME_APPS, false)
+        set(value) = prefs.edit { putBoolean(AUTO_SORT_HOME_APPS, value).apply() }
 
     var launcherRestartTimestamp: Long
         get() = prefs.getLong(LAUNCHER_RESTART_TIMESTAMP, 0L)
@@ -792,6 +797,45 @@ class Prefs(context: Context) {
         if (screenTimeAppPackage == packageName) screenTimeAppClassName = activityClassName
         if (appPackageSwipeLeft == packageName) appActivityClassNameSwipeLeft = activityClassName
         if (appPackageSwipeRight == packageName) appActivityClassNameRight = activityClassName
+    }
+
+    data class HomeAppSlot(
+        val appName: String,
+        val appPackage: String,
+        val activityClassName: String,
+        val user: String,
+        val isShortcut: Boolean,
+        val shortcutId: String,
+    )
+
+    fun getHomeApp(location: Int) = HomeAppSlot(
+        getAppName(location),
+        getAppPackage(location),
+        getAppActivityClassName(location),
+        getAppUser(location),
+        getIsShortcut(location),
+        getShortcutId(location),
+    )
+
+    fun setHomeApp(location: Int, slot: HomeAppSlot) {
+        // Keys follow the APP_NAME_1..APP_NAME_12 naming used by the per-slot properties
+        prefs.edit {
+            putString("APP_NAME_$location", slot.appName)
+            putString("APP_PACKAGE_$location", slot.appPackage)
+            putString("APP_ACTIVITY_CLASS_NAME_$location", slot.activityClassName)
+            putString("APP_USER_$location", slot.user)
+            putBoolean("IS_SHORTCUT_$location", slot.isShortcut)
+            putString("SHORTCUT_ID_$location", slot.shortcutId)
+        }
+    }
+
+    fun sortHomeAppsAlphabetically(count: Int) {
+        val slots = (1..count).map { getHomeApp(it) }
+        val sorted = slots.sortedWith(
+            compareBy({ it.appName.isEmpty() }, { it.appName.lowercase() })
+        )
+        if (sorted == slots) return
+        sorted.forEachIndexed { index, slot -> setHomeApp(index + 1, slot) }
     }
 
     fun getAppRenameLabel(appPackage: String): String = prefs.getString(appPackage, "").toString()
