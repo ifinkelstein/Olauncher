@@ -68,7 +68,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     val showDialog = SingleLiveEvent<String>()
     val showMindfulPause = SingleLiveEvent<AppModel?>()
+    val showBudgetExceeded = SingleLiveEvent<AppModel?>()
     private var pendingLaunchApp: AppModel? = null
+    private var latestAppUsage: Map<String, AppDailyUsage> = emptyMap()
     val checkForMessages = SingleLiveEvent<Unit?>()
     val resetLauncherLiveData = SingleLiveEvent<Unit?>()
     // Home button for recents feature disabled
@@ -84,6 +86,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
 
             Constants.FLAG_TOGGLE_MINDFUL_APP -> toggleMindfulApp(appModel)
+            Constants.FLAG_SET_BUDGET_APP -> cycleAppBudget(appModel)
 
             Constants.FLAG_SET_HOME_APP_1 -> saveHomeApp(appModel, 1)
             Constants.FLAG_SET_HOME_APP_2 -> saveHomeApp(appModel, 2)
@@ -112,12 +115,43 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             is AppModel.PinnedShortcut -> appModel.appPackage
             else -> return
         }
+        if (isOverBudget(appPackage)) {
+            pendingLaunchApp = appModel
+            showBudgetExceeded.postValue(appModel)
+            return
+        }
         if (prefs.mindfulPauseSeconds > 0 && prefs.mindfulApps.contains(appPackage)) {
             pendingLaunchApp = appModel
             showMindfulPause.postValue(appModel)
             return
         }
         launchNow(appModel)
+    }
+
+    private fun isOverBudget(appPackage: String): Boolean {
+        val budgetMinutes = prefs.getAppBudgetMinutes(appPackage)
+        if (budgetMinutes <= 0) return false
+        val timeUsed = latestAppUsage[appPackage]?.timeUsed ?: return false
+        return timeUsed >= budgetMinutes * Constants.ONE_MINUTE_IN_MILLIS
+    }
+
+    fun appBudgetUsage(appPackage: String): Pair<Long, Int> =
+        (latestAppUsage[appPackage]?.timeUsed ?: 0L) to prefs.getAppBudgetMinutes(appPackage)
+
+    private fun cycleAppBudget(appModel: AppModel) {
+        if (appModel !is AppModel.App) return
+        val next = when (prefs.getAppBudgetMinutes(appModel.appPackage)) {
+            0 -> 15
+            15 -> 30
+            30 -> 60
+            60 -> 90
+            else -> 0
+        }
+        prefs.setAppBudgetMinutes(appModel.appPackage, next)
+        appContext.showToast(
+            if (next == 0) appContext.getString(R.string.budget_removed, appModel.appLabel)
+            else appContext.getString(R.string.budget_set, appModel.appLabel, next.toString())
+        )
     }
 
     private fun launchNow(appModel: AppModel) {
@@ -624,11 +658,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 eventLogWrapper.getForegroundStatsByTimestamps(calendar.timeInMillis, System.currentTimeMillis())
             val timeStats = eventLogWrapper.aggregateForegroundStats(foregroundStats)
             val sessionCounts = eventLogWrapper.aggregateSessionCounts(foregroundStats)
-            appUsageTimes.postValue(
-                timeStats.associate {
-                    it.applicationId to AppDailyUsage(it.timeUsed, sessionCounts[it.applicationId] ?: 0)
-                }
-            )
+            val usage = timeStats.associate {
+                it.applicationId to AppDailyUsage(it.timeUsed, sessionCounts[it.applicationId] ?: 0)
+            }
+            latestAppUsage = usage
+            appUsageTimes.postValue(usage)
         }
     }
 

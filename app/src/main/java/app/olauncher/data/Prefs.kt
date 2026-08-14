@@ -46,6 +46,7 @@ class Prefs(context: Context) {
     private val SHOW_UNLOCK_COUNT = "SHOW_UNLOCK_COUNT"
     private val MINDFUL_APPS = "MINDFUL_APPS"
     private val MINDFUL_PAUSE_SECONDS = "MINDFUL_PAUSE_SECONDS"
+    private val BUDGETED_APPS = "BUDGETED_APPS"
     private val LAUNCHER_RESTART_TIMESTAMP = "LAUNCHER_RECREATE_TIMESTAMP"
     private val SHOWN_ON_DAY_OF_YEAR = "SHOWN_ON_DAY_OF_YEAR"
     // Home button for recents feature disabled
@@ -265,6 +266,19 @@ class Prefs(context: Context) {
     var mindfulPauseSeconds: Int
         get() = prefs.getInt(MINDFUL_PAUSE_SECONDS, 0)
         set(value) = prefs.edit { putInt(MINDFUL_PAUSE_SECONDS, value).apply() }
+
+    var budgetedApps: MutableSet<String>
+        get() = prefs.getStringSet(BUDGETED_APPS, mutableSetOf()) as MutableSet<String>
+        set(value) = prefs.edit { putStringSet(BUDGETED_APPS, value).apply() }
+
+    fun getAppBudgetMinutes(appPackage: String): Int = prefs.getInt("APP_BUDGET_$appPackage", 0)
+
+    fun setAppBudgetMinutes(appPackage: String, minutes: Int) {
+        prefs.edit { putInt("APP_BUDGET_$appPackage", minutes) }
+        val budgeted = mutableSetOf<String>().apply { addAll(budgetedApps) }
+        if (minutes > 0) budgeted.add(appPackage) else budgeted.remove(appPackage)
+        budgetedApps = budgeted
+    }
 
     var launcherRestartTimestamp: Long
         get() = prefs.getLong(LAUNCHER_RESTART_TIMESTAMP, 0L)

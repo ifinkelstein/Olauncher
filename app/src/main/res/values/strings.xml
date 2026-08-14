@@ -173,6 +173,11 @@
     <string name="added_to_mindful_pause">Added to mindful pause</string>
     <string name="removed_from_mindful_pause">Removed from mindful pause</string>
     <string name="pause_seconds" translatable="false">%1$ds</string>
+    <string name="app_budgets">App budgets</string>
+    <string name="budget_set">%1$s: %2$sm daily budget</string>
+    <string name="budget_removed">%1$s budget removed</string>
+    <string name="budget_exceeded_message">%1$s used of your %2$s daily budget</string>
+    <string name="open_anyway">Open anyway</string>
     <string name="open_count_suffix" translatable="false">%1$dx</string>
     <string name="sort_apps_a_z">Sort apps A–Z</string>
     <string name="app_name_with_usage" translatable="false">%1$s · %2$s</string>

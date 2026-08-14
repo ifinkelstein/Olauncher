@@ -468,28 +468,36 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
 
     private fun refreshAppUsageTimes() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
-        if (prefs.showAppUsageTime.not() && prefs.showAppOpenCount.not()) return
+        if (prefs.showAppUsageTime.not() && prefs.showAppOpenCount.not() && prefs.budgetedApps.isEmpty()) return
         if (requireContext().appUsagePermissionGranted().not()) return
         viewModel.getTodaysAppUsage()
     }
 
     private fun applyAppUsageTimes(usageTimes: Map<String, MainViewModel.AppDailyUsage>) {
-        if (prefs.showAppUsageTime.not() && prefs.showAppOpenCount.not()) return
+        val showTime = prefs.showAppUsageTime
+        val showCount = prefs.showAppOpenCount
         for (location in 1..prefs.homeAppsNum) {
             val appName = prefs.getAppName(location)
             val appPackage = prefs.getAppPackage(location)
             if (appName.isEmpty() || appPackage.isEmpty()) continue
+            val textView = homeAppTextView(location) ?: continue
             val usage = usageTimes[appPackage]
-            val suffixParts = mutableListOf<String>()
-            if (prefs.showAppUsageTime)
-                suffixParts.add(requireContext().formattedTimeSpent(usage?.timeUsed ?: 0L))
-            if (prefs.showAppOpenCount)
-                suffixParts.add(getString(R.string.open_count_suffix, usage?.openCount ?: 0))
-            homeAppTextView(location)?.text = getString(
-                R.string.app_name_with_usage,
-                appName,
-                suffixParts.joinToString(" · ")
-            )
+            if (showTime || showCount) {
+                val suffixParts = mutableListOf<String>()
+                if (showTime)
+                    suffixParts.add(requireContext().formattedTimeSpent(usage?.timeUsed ?: 0L))
+                if (showCount)
+                    suffixParts.add(getString(R.string.open_count_suffix, usage?.openCount ?: 0))
+                textView.text = getString(
+                    R.string.app_name_with_usage,
+                    appName,
+                    suffixParts.joinToString(" · ")
+                )
+            }
+            val budgetMinutes = prefs.getAppBudgetMinutes(appPackage)
+            val overBudget = budgetMinutes > 0 &&
+                    (usage?.timeUsed ?: 0L) >= budgetMinutes * Constants.ONE_MINUTE_IN_MILLIS
+            textView.alpha = if (overBudget) 0.4f else 1f
         }
     }
 

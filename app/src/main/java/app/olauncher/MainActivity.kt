@@ -25,6 +25,7 @@ import app.olauncher.data.AppModel
 import app.olauncher.data.Constants
 import app.olauncher.data.Prefs
 import app.olauncher.databinding.ActivityMainBinding
+import app.olauncher.helper.formattedTimeSpent
 import app.olauncher.helper.getColorFromAttr
 import app.olauncher.helper.hasBeenDays
 import app.olauncher.helper.hasBeenHours
@@ -207,6 +208,23 @@ class MainActivity : AppCompatActivity() {
         binding.messageLayout.visibility = View.GONE
     }
 
+    private fun showBudgetExceededDialog(appModel: AppModel) {
+        if (appModel !is AppModel.App) return
+        val (timeUsed, budgetMinutes) = viewModel.appBudgetUsage(appModel.appPackage)
+        binding.tvTitle.text = appModel.appLabel
+        binding.tvMessage.text = getString(
+            R.string.budget_exceeded_message,
+            formattedTimeSpent(timeUsed),
+            getString(R.string.time_spent_min, budgetMinutes.toString())
+        )
+        binding.tvAction.text = getString(R.string.open_anyway)
+        binding.tvAction.setOnClickListener {
+            binding.messageLayout.visibility = View.GONE
+            viewModel.proceedWithPendingLaunch()
+        }
+        binding.messageLayout.visibility = View.VISIBLE
+    }
+
     private fun initObservers(viewModel: MainViewModel) {
         viewModel.launcherResetFailed.observe(this) {
             openLauncherChooser(it)
@@ -222,6 +240,9 @@ class MainActivity : AppCompatActivity() {
         }
         viewModel.showMindfulPause.observe(this) { appModel ->
             appModel?.let { showMindfulPauseDialog(it) }
+        }
+        viewModel.showBudgetExceeded.observe(this) { appModel ->
+            appModel?.let { showBudgetExceededDialog(it) }
         }
         viewModel.showDialog.observe(this) {
             when (it) {

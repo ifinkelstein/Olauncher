@@ -124,6 +124,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             R.id.unlockCount -> toggleUnlockCount()
             R.id.mindfulPause -> cycleMindfulPause()
             R.id.mindfulApps -> showAppListIfEnabled(Constants.FLAG_TOGGLE_MINDFUL_APP)
+            R.id.appBudgets -> showAppListIfEnabled(Constants.FLAG_SET_BUDGET_APP)
             R.id.sortHomeApps -> toggleSortHomeApps()
             R.id.appInfo -> openAppInfo(requireContext(), Process.myUserHandle(), BuildConfig.APPLICATION_ID)
             R.id.setLauncher -> viewModel.resetLauncherLiveData.call()
@@ -241,6 +242,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.unlockCount.setOnClickListener(this)
         binding.mindfulPause.setOnClickListener(this)
         binding.mindfulApps.setOnClickListener(this)
+        binding.appBudgets.setOnClickListener(this)
         binding.sortHomeApps.setOnClickListener(this)
         binding.dailyWallpaperUrl.setOnClickListener(this)
         binding.dailyWallpaper.setOnClickListener(this)
@@ -659,6 +661,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             if (prefs.mindfulPauseSeconds == 0) getString(R.string.off)
             else getString(R.string.pause_seconds, prefs.mindfulPauseSeconds)
         binding.mindfulApps.text = prefs.mindfulApps.size.toString()
+        binding.appBudgets.text = prefs.budgetedApps.size.toString()
     }
 
     private fun populateUnlockCount() {
