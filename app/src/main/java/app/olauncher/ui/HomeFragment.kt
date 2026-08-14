@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.view.setPadding
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -363,6 +364,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
             populateScreenTime()
 
+        applyHomeAppSpacing()
         refreshAppUsageTimes()
         refreshUnlockCount()
         refreshNowRow()
@@ -473,6 +475,17 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             12 -> binding.homeApp12
             else -> null
         }
+    }
+
+    private fun applyHomeAppSpacing() {
+        val padding =
+            if (prefs.homeAppSpacingDp >= 0) prefs.homeAppSpacingDp.dpToPx()
+            else resources.getDimensionPixelSize(R.dimen.home_app_padding_vertical)
+        for (location in 1..12)
+            homeAppTextView(location)?.updatePadding(top = padding, bottom = padding)
+        binding.homeAppsLayout.updatePadding(
+            bottom = if (prefs.extendHomeAppsToBottom) 12.dpToPx() else 48.dpToPx()
+        )
     }
 
     private fun refreshNowRow() {

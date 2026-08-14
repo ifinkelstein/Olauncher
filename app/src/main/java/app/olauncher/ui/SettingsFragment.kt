@@ -92,6 +92,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         populateMindfulPause()
         populateGrayscale()
         populateNowRow()
+        populateAppSpacing()
+        populateAppsToBottom()
         populateSortHomeApps()
         populateLockSettings()
         // Home button for recents feature disabled
@@ -141,6 +143,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             R.id.grayscale -> toggleGrayscale()
             R.id.sortHomeApps -> toggleSortHomeApps()
             R.id.nowRow -> cycleNowRow()
+            R.id.appSpacing -> cycleAppSpacing()
+            R.id.appsToBottom -> toggleAppsToBottom()
             R.id.appInfo -> openAppInfo(requireContext(), Process.myUserHandle(), BuildConfig.APPLICATION_ID)
             R.id.setLauncher -> viewModel.resetLauncherLiveData.call()
             R.id.toggleLock -> toggleLockMode()
@@ -261,6 +265,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.grayscale.setOnClickListener(this)
         binding.sortHomeApps.setOnClickListener(this)
         binding.nowRow.setOnClickListener(this)
+        binding.appSpacing.setOnClickListener(this)
+        binding.appsToBottom.setOnClickListener(this)
         binding.dailyWallpaperUrl.setOnClickListener(this)
         binding.dailyWallpaper.setOnClickListener(this)
         binding.alignment.setOnClickListener(this)
@@ -661,6 +667,32 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         prefs.showUnlockCount = !prefs.showUnlockCount
         populateUnlockCount()
         viewModel.refreshHome(false)
+    }
+
+    private fun cycleAppSpacing() {
+        // -1 = density default; then explicit dp values
+        val spacingValues = listOf(-1, 0, 2, 4, 6, 8, 12, 16)
+        val currentIndex = spacingValues.indexOf(prefs.homeAppSpacingDp)
+        prefs.homeAppSpacingDp = spacingValues[(currentIndex + 1) % spacingValues.size]
+        populateAppSpacing()
+        viewModel.refreshHome(false)
+    }
+
+    private fun populateAppSpacing() {
+        binding.appSpacing.text =
+            if (prefs.homeAppSpacingDp < 0) getString(R.string.spacing_default)
+            else prefs.homeAppSpacingDp.toString()
+    }
+
+    private fun toggleAppsToBottom() {
+        prefs.extendHomeAppsToBottom = !prefs.extendHomeAppsToBottom
+        populateAppsToBottom()
+        viewModel.refreshHome(false)
+    }
+
+    private fun populateAppsToBottom() {
+        binding.appsToBottom.text =
+            if (prefs.extendHomeAppsToBottom) getString(R.string.on) else getString(R.string.off)
     }
 
     private fun cycleNowRow() {

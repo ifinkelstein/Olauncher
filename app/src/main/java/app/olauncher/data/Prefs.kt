@@ -48,6 +48,8 @@ class Prefs(context: Context) {
     private val MINDFUL_PAUSE_SECONDS = "MINDFUL_PAUSE_SECONDS"
     private val BUDGETED_APPS = "BUDGETED_APPS"
     private val NOW_ROW_MODE = "NOW_ROW_MODE"
+    private val HOME_APP_SPACING_DP = "HOME_APP_SPACING_DP"
+    private val EXTEND_HOME_APPS_TO_BOTTOM = "EXTEND_HOME_APPS_TO_BOTTOM"
     private val NOW_ROW_APP_PACKAGE = "NOW_ROW_APP_PACKAGE"
     private val NOW_ROW_APP_USER = "NOW_ROW_APP_USER"
     private val NOW_ROW_APP_CLASS_NAME = "NOW_ROW_APP_CLASS_NAME"
@@ -289,6 +291,15 @@ class Prefs(context: Context) {
     var nowRowMode: Int
         get() = prefs.getInt(NOW_ROW_MODE, Constants.NowRow.OFF)
         set(value) = prefs.edit { putInt(NOW_ROW_MODE, value).apply() }
+
+    // -1 means use the density-specific default from resources
+    var homeAppSpacingDp: Int
+        get() = prefs.getInt(HOME_APP_SPACING_DP, -1)
+        set(value) = prefs.edit { putInt(HOME_APP_SPACING_DP, value).apply() }
+
+    var extendHomeAppsToBottom: Boolean
+        get() = prefs.getBoolean(EXTEND_HOME_APPS_TO_BOTTOM, false)
+        set(value) = prefs.edit { putBoolean(EXTEND_HOME_APPS_TO_BOTTOM, value).apply() }
 
     var nowRowAppPackage: String
         get() = prefs.getString(NOW_ROW_APP_PACKAGE, "").toString()

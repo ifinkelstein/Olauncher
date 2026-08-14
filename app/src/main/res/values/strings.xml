@@ -180,6 +180,9 @@
     <string name="open_anyway">Open anyway</string>
     <string name="grayscale">Grayscale</string>
     <string name="now_row">Now row</string>
+    <string name="app_spacing">App spacing</string>
+    <string name="apps_to_bottom">Apps to bottom</string>
+    <string name="spacing_default">Default</string>
     <string name="calendar">Calendar</string>
     <string name="weather">Weather</string>
     <string name="grayscale_permission_message">Permission needed. Run: adb shell pm grant %1$s android.permission.WRITE_SECURE_SETTINGS</string>
