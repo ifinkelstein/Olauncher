@@ -153,6 +153,10 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             R.id.maxApps6 -> updateHomeAppsNum(6)
             R.id.maxApps7 -> updateHomeAppsNum(7)
             R.id.maxApps8 -> updateHomeAppsNum(8)
+            R.id.maxApps9 -> updateHomeAppsNum(9)
+            R.id.maxApps10 -> updateHomeAppsNum(10)
+            R.id.maxApps11 -> updateHomeAppsNum(11)
+            R.id.maxApps12 -> updateHomeAppsNum(12)
 
             R.id.textSizeMinus -> adjustTextSizePreview(-0.1f)
             R.id.textSizePlus -> adjustTextSizePreview(0.1f)
@@ -263,6 +267,10 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.maxApps6.setOnClickListener(this)
         binding.maxApps7.setOnClickListener(this)
         binding.maxApps8.setOnClickListener(this)
+        binding.maxApps9.setOnClickListener(this)
+        binding.maxApps10.setOnClickListener(this)
+        binding.maxApps11.setOnClickListener(this)
+        binding.maxApps12.setOnClickListener(this)
 
         binding.textSizeMinus.setOnClickListener(this)
         binding.textSizePlus.setOnClickListener(this)

@@ -141,6 +141,10 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             R.id.homeApp6 -> showAppList(Constants.FLAG_SET_HOME_APP_6, prefs.appName6.isNotEmpty(), true)
             R.id.homeApp7 -> showAppList(Constants.FLAG_SET_HOME_APP_7, prefs.appName7.isNotEmpty(), true)
             R.id.homeApp8 -> showAppList(Constants.FLAG_SET_HOME_APP_8, prefs.appName8.isNotEmpty(), true)
+            R.id.homeApp9 -> showAppList(Constants.FLAG_SET_HOME_APP_9, prefs.appName9.isNotEmpty(), true)
+            R.id.homeApp10 -> showAppList(Constants.FLAG_SET_HOME_APP_10, prefs.appName10.isNotEmpty(), true)
+            R.id.homeApp11 -> showAppList(Constants.FLAG_SET_HOME_APP_11, prefs.appName11.isNotEmpty(), true)
+            R.id.homeApp12 -> showAppList(Constants.FLAG_SET_HOME_APP_12, prefs.appName12.isNotEmpty(), true)
             R.id.clock -> {
                 showAppList(Constants.FLAG_SET_CLOCK_APP)
                 prefs.clockAppPackage = ""
@@ -221,6 +225,10 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         binding.homeApp6.setOnTouchListener(getViewSwipeTouchListener(context, binding.homeApp6))
         binding.homeApp7.setOnTouchListener(getViewSwipeTouchListener(context, binding.homeApp7))
         binding.homeApp8.setOnTouchListener(getViewSwipeTouchListener(context, binding.homeApp8))
+        binding.homeApp9.setOnTouchListener(getViewSwipeTouchListener(context, binding.homeApp9))
+        binding.homeApp10.setOnTouchListener(getViewSwipeTouchListener(context, binding.homeApp10))
+        binding.homeApp11.setOnTouchListener(getViewSwipeTouchListener(context, binding.homeApp11))
+        binding.homeApp12.setOnTouchListener(getViewSwipeTouchListener(context, binding.homeApp12))
     }
 
     private fun initClickListeners() {
@@ -245,6 +253,10 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         binding.homeApp6.setOnClickListener(this)
         binding.homeApp7.setOnClickListener(this)
         binding.homeApp8.setOnClickListener(this)
+        binding.homeApp9.setOnClickListener(this)
+        binding.homeApp10.setOnClickListener(this)
+        binding.homeApp11.setOnClickListener(this)
+        binding.homeApp12.setOnClickListener(this)
         binding.homeApp1.setOnLongClickListener(this)
         binding.homeApp2.setOnLongClickListener(this)
         binding.homeApp3.setOnLongClickListener(this)
@@ -253,6 +265,10 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         binding.homeApp6.setOnLongClickListener(this)
         binding.homeApp7.setOnLongClickListener(this)
         binding.homeApp8.setOnLongClickListener(this)
+        binding.homeApp9.setOnLongClickListener(this)
+        binding.homeApp10.setOnLongClickListener(this)
+        binding.homeApp11.setOnLongClickListener(this)
+        binding.homeApp12.setOnLongClickListener(this)
     }
 
     private fun setHomeAlignment(horizontalGravity: Int = prefs.homeAlignment) {
@@ -267,6 +283,10 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         binding.homeApp6.gravity = horizontalGravity
         binding.homeApp7.gravity = horizontalGravity
         binding.homeApp8.gravity = horizontalGravity
+        binding.homeApp9.gravity = horizontalGravity
+        binding.homeApp10.gravity = horizontalGravity
+        binding.homeApp11.gravity = horizontalGravity
+        binding.homeApp12.gravity = horizontalGravity
     }
 
     private fun populateDateTime() {
@@ -378,6 +398,34 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             prefs.appName8 = ""
             prefs.appPackage8 = ""
         }
+        if (homeAppsNum == 8) return
+
+        binding.homeApp9.visibility = View.VISIBLE
+        if (!setHomeAppText(binding.homeApp9, prefs.appName9, prefs.appPackage9, prefs.appUser9, prefs.isShortcut9, prefs.shortcutId9)) {
+            prefs.appName9 = ""
+            prefs.appPackage9 = ""
+        }
+        if (homeAppsNum == 9) return
+
+        binding.homeApp10.visibility = View.VISIBLE
+        if (!setHomeAppText(binding.homeApp10, prefs.appName10, prefs.appPackage10, prefs.appUser10, prefs.isShortcut10, prefs.shortcutId10)) {
+            prefs.appName10 = ""
+            prefs.appPackage10 = ""
+        }
+        if (homeAppsNum == 10) return
+
+        binding.homeApp11.visibility = View.VISIBLE
+        if (!setHomeAppText(binding.homeApp11, prefs.appName11, prefs.appPackage11, prefs.appUser11, prefs.isShortcut11, prefs.shortcutId11)) {
+            prefs.appName11 = ""
+            prefs.appPackage11 = ""
+        }
+        if (homeAppsNum == 11) return
+
+        binding.homeApp12.visibility = View.VISIBLE
+        if (!setHomeAppText(binding.homeApp12, prefs.appName12, prefs.appPackage12, prefs.appUser12, prefs.isShortcut12, prefs.shortcutId12)) {
+            prefs.appName12 = ""
+            prefs.appPackage12 = ""
+        }
     }
 
     private fun setHomeAppText(
@@ -435,6 +483,10 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         binding.homeApp6.visibility = View.GONE
         binding.homeApp7.visibility = View.GONE
         binding.homeApp8.visibility = View.GONE
+        binding.homeApp9.visibility = View.GONE
+        binding.homeApp10.visibility = View.GONE
+        binding.homeApp11.visibility = View.GONE
+        binding.homeApp12.visibility = View.GONE
     }
 
     private fun launchAppOrShortcut(

@@ -323,6 +323,10 @@ class AppDrawerFragment : BaseFragment() {
                 Constants.FLAG_SET_HOME_APP_6 -> prefs.appName6 = name
                 Constants.FLAG_SET_HOME_APP_7 -> prefs.appName7 = name
                 Constants.FLAG_SET_HOME_APP_8 -> prefs.appName8 = name
+                Constants.FLAG_SET_HOME_APP_9 -> prefs.appName9 = name
+                Constants.FLAG_SET_HOME_APP_10 -> prefs.appName10 = name
+                Constants.FLAG_SET_HOME_APP_11 -> prefs.appName11 = name
+                Constants.FLAG_SET_HOME_APP_12 -> prefs.appName12 = name
             }
             findNavController().popBackStack()
         }

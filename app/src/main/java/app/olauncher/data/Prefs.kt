@@ -53,6 +53,10 @@ class Prefs(context: Context) {
     private val APP_NAME_6 = "APP_NAME_6"
     private val APP_NAME_7 = "APP_NAME_7"
     private val APP_NAME_8 = "APP_NAME_8"
+    private val APP_NAME_9 = "APP_NAME_9"
+    private val APP_NAME_10 = "APP_NAME_10"
+    private val APP_NAME_11 = "APP_NAME_11"
+    private val APP_NAME_12 = "APP_NAME_12"
     private val APP_PACKAGE_1 = "APP_PACKAGE_1"
     private val APP_PACKAGE_2 = "APP_PACKAGE_2"
     private val APP_PACKAGE_3 = "APP_PACKAGE_3"
@@ -61,6 +65,10 @@ class Prefs(context: Context) {
     private val APP_PACKAGE_6 = "APP_PACKAGE_6"
     private val APP_PACKAGE_7 = "APP_PACKAGE_7"
     private val APP_PACKAGE_8 = "APP_PACKAGE_8"
+    private val APP_PACKAGE_9 = "APP_PACKAGE_9"
+    private val APP_PACKAGE_10 = "APP_PACKAGE_10"
+    private val APP_PACKAGE_11 = "APP_PACKAGE_11"
+    private val APP_PACKAGE_12 = "APP_PACKAGE_12"
     private val APP_ACTIVITY_CLASS_NAME_1 = "APP_ACTIVITY_CLASS_NAME_1"
     private val APP_ACTIVITY_CLASS_NAME_2 = "APP_ACTIVITY_CLASS_NAME_2"
     private val APP_ACTIVITY_CLASS_NAME_3 = "APP_ACTIVITY_CLASS_NAME_3"
@@ -69,6 +77,10 @@ class Prefs(context: Context) {
     private val APP_ACTIVITY_CLASS_NAME_6 = "APP_ACTIVITY_CLASS_NAME_6"
     private val APP_ACTIVITY_CLASS_NAME_7 = "APP_ACTIVITY_CLASS_NAME_7"
     private val APP_ACTIVITY_CLASS_NAME_8 = "APP_ACTIVITY_CLASS_NAME_8"
+    private val APP_ACTIVITY_CLASS_NAME_9 = "APP_ACTIVITY_CLASS_NAME_9"
+    private val APP_ACTIVITY_CLASS_NAME_10 = "APP_ACTIVITY_CLASS_NAME_10"
+    private val APP_ACTIVITY_CLASS_NAME_11 = "APP_ACTIVITY_CLASS_NAME_11"
+    private val APP_ACTIVITY_CLASS_NAME_12 = "APP_ACTIVITY_CLASS_NAME_12"
     private val APP_USER_1 = "APP_USER_1"
     private val APP_USER_2 = "APP_USER_2"
     private val APP_USER_3 = "APP_USER_3"
@@ -77,6 +89,10 @@ class Prefs(context: Context) {
     private val APP_USER_6 = "APP_USER_6"
     private val APP_USER_7 = "APP_USER_7"
     private val APP_USER_8 = "APP_USER_8"
+    private val APP_USER_9 = "APP_USER_9"
+    private val APP_USER_10 = "APP_USER_10"
+    private val APP_USER_11 = "APP_USER_11"
+    private val APP_USER_12 = "APP_USER_12"
 
     private val APP_NAME_SWIPE_LEFT = "APP_NAME_SWIPE_LEFT"
     private val APP_NAME_SWIPE_RIGHT = "APP_NAME_SWIPE_RIGHT"
@@ -112,6 +128,14 @@ class Prefs(context: Context) {
     private val SHORTCUT_ID_7 = "SHORTCUT_ID_7"
     private val IS_SHORTCUT_8 = "IS_SHORTCUT_8"
     private val SHORTCUT_ID_8 = "SHORTCUT_ID_8"
+    private val IS_SHORTCUT_9 = "IS_SHORTCUT_9"
+    private val SHORTCUT_ID_9 = "SHORTCUT_ID_9"
+    private val IS_SHORTCUT_10 = "IS_SHORTCUT_10"
+    private val SHORTCUT_ID_10 = "SHORTCUT_ID_10"
+    private val IS_SHORTCUT_11 = "IS_SHORTCUT_11"
+    private val SHORTCUT_ID_11 = "SHORTCUT_ID_11"
+    private val IS_SHORTCUT_12 = "IS_SHORTCUT_12"
+    private val SHORTCUT_ID_12 = "SHORTCUT_ID_12"
 
     private val SHORTCUT_ID_SWIPE_LEFT = "SHORTCUT_ID_SWIPE_LEFT"
     private val IS_SHORTCUT_SWIPE_LEFT = "IS_SHORTCUT_SWIPE_LEFT"
@@ -289,6 +313,22 @@ class Prefs(context: Context) {
         get() = prefs.getString(APP_NAME_8, "").toString()
         set(value) = prefs.edit { putString(APP_NAME_8, value).apply() }
 
+    var appName9: String
+        get() = prefs.getString(APP_NAME_9, "").toString()
+        set(value) = prefs.edit { putString(APP_NAME_9, value).apply() }
+
+    var appName10: String
+        get() = prefs.getString(APP_NAME_10, "").toString()
+        set(value) = prefs.edit { putString(APP_NAME_10, value).apply() }
+
+    var appName11: String
+        get() = prefs.getString(APP_NAME_11, "").toString()
+        set(value) = prefs.edit { putString(APP_NAME_11, value).apply() }
+
+    var appName12: String
+        get() = prefs.getString(APP_NAME_12, "").toString()
+        set(value) = prefs.edit { putString(APP_NAME_12, value).apply() }
+
     var appPackage1: String
         get() = prefs.getString(APP_PACKAGE_1, "").toString()
         set(value) = prefs.edit { putString(APP_PACKAGE_1, value).apply() }
@@ -320,6 +360,22 @@ class Prefs(context: Context) {
     var appPackage8: String
         get() = prefs.getString(APP_PACKAGE_8, "").toString()
         set(value) = prefs.edit { putString(APP_PACKAGE_8, value).apply() }
+
+    var appPackage9: String
+        get() = prefs.getString(APP_PACKAGE_9, "").toString()
+        set(value) = prefs.edit { putString(APP_PACKAGE_9, value).apply() }
+
+    var appPackage10: String
+        get() = prefs.getString(APP_PACKAGE_10, "").toString()
+        set(value) = prefs.edit { putString(APP_PACKAGE_10, value).apply() }
+
+    var appPackage11: String
+        get() = prefs.getString(APP_PACKAGE_11, "").toString()
+        set(value) = prefs.edit { putString(APP_PACKAGE_11, value).apply() }
+
+    var appPackage12: String
+        get() = prefs.getString(APP_PACKAGE_12, "").toString()
+        set(value) = prefs.edit { putString(APP_PACKAGE_12, value).apply() }
 
     var appActivityClassName1: String?
         get() = prefs.getString(APP_ACTIVITY_CLASS_NAME_1, "").toString()
@@ -353,6 +409,22 @@ class Prefs(context: Context) {
         get() = prefs.getString(APP_ACTIVITY_CLASS_NAME_8, "").toString()
         set(value) = prefs.edit { putString(APP_ACTIVITY_CLASS_NAME_8, value).apply() }
 
+    var appActivityClassName9: String?
+        get() = prefs.getString(APP_ACTIVITY_CLASS_NAME_9, "").toString()
+        set(value) = prefs.edit { putString(APP_ACTIVITY_CLASS_NAME_9, value).apply() }
+
+    var appActivityClassName10: String?
+        get() = prefs.getString(APP_ACTIVITY_CLASS_NAME_10, "").toString()
+        set(value) = prefs.edit { putString(APP_ACTIVITY_CLASS_NAME_10, value).apply() }
+
+    var appActivityClassName11: String?
+        get() = prefs.getString(APP_ACTIVITY_CLASS_NAME_11, "").toString()
+        set(value) = prefs.edit { putString(APP_ACTIVITY_CLASS_NAME_11, value).apply() }
+
+    var appActivityClassName12: String?
+        get() = prefs.getString(APP_ACTIVITY_CLASS_NAME_12, "").toString()
+        set(value) = prefs.edit { putString(APP_ACTIVITY_CLASS_NAME_12, value).apply() }
+
     var appUser1: String
         get() = prefs.getString(APP_USER_1, "").toString()
         set(value) = prefs.edit { putString(APP_USER_1, value).apply() }
@@ -384,6 +456,22 @@ class Prefs(context: Context) {
     var appUser8: String
         get() = prefs.getString(APP_USER_8, "").toString()
         set(value) = prefs.edit { putString(APP_USER_8, value).apply() }
+
+    var appUser9: String
+        get() = prefs.getString(APP_USER_9, "").toString()
+        set(value) = prefs.edit { putString(APP_USER_9, value).apply() }
+
+    var appUser10: String
+        get() = prefs.getString(APP_USER_10, "").toString()
+        set(value) = prefs.edit { putString(APP_USER_10, value).apply() }
+
+    var appUser11: String
+        get() = prefs.getString(APP_USER_11, "").toString()
+        set(value) = prefs.edit { putString(APP_USER_11, value).apply() }
+
+    var appUser12: String
+        get() = prefs.getString(APP_USER_12, "").toString()
+        set(value) = prefs.edit { putString(APP_USER_12, value).apply() }
 
     var appNameSwipeLeft: String
         get() = prefs.getString(APP_NAME_SWIPE_LEFT, "Camera").toString()
@@ -517,6 +605,38 @@ class Prefs(context: Context) {
         get() = prefs.getString(SHORTCUT_ID_8, "").toString()
         set(value) = prefs.edit { putString(SHORTCUT_ID_8, value) }
 
+    var isShortcut9: Boolean
+        get() = prefs.getBoolean(IS_SHORTCUT_9, false)
+        set(value) = prefs.edit { putBoolean(IS_SHORTCUT_9, value) }
+
+    var shortcutId9: String
+        get() = prefs.getString(SHORTCUT_ID_9, "").toString()
+        set(value) = prefs.edit { putString(SHORTCUT_ID_9, value) }
+
+    var isShortcut10: Boolean
+        get() = prefs.getBoolean(IS_SHORTCUT_10, false)
+        set(value) = prefs.edit { putBoolean(IS_SHORTCUT_10, value) }
+
+    var shortcutId10: String
+        get() = prefs.getString(SHORTCUT_ID_10, "").toString()
+        set(value) = prefs.edit { putString(SHORTCUT_ID_10, value) }
+
+    var isShortcut11: Boolean
+        get() = prefs.getBoolean(IS_SHORTCUT_11, false)
+        set(value) = prefs.edit { putBoolean(IS_SHORTCUT_11, value) }
+
+    var shortcutId11: String
+        get() = prefs.getString(SHORTCUT_ID_11, "").toString()
+        set(value) = prefs.edit { putString(SHORTCUT_ID_11, value) }
+
+    var isShortcut12: Boolean
+        get() = prefs.getBoolean(IS_SHORTCUT_12, false)
+        set(value) = prefs.edit { putBoolean(IS_SHORTCUT_12, value) }
+
+    var shortcutId12: String
+        get() = prefs.getString(SHORTCUT_ID_12, "").toString()
+        set(value) = prefs.edit { putString(SHORTCUT_ID_12, value) }
+
     var shortcutIdSwipeLeft: String
         get() = prefs.getString(SHORTCUT_ID_SWIPE_LEFT, "").toString()
         set(value) = prefs.edit { putString(SHORTCUT_ID_SWIPE_LEFT, value) }
@@ -543,6 +663,10 @@ class Prefs(context: Context) {
             6 -> prefs.getString(APP_NAME_6, "").toString()
             7 -> prefs.getString(APP_NAME_7, "").toString()
             8 -> prefs.getString(APP_NAME_8, "").toString()
+            9 -> prefs.getString(APP_NAME_9, "").toString()
+            10 -> prefs.getString(APP_NAME_10, "").toString()
+            11 -> prefs.getString(APP_NAME_11, "").toString()
+            12 -> prefs.getString(APP_NAME_12, "").toString()
             else -> ""
         }
     }
@@ -557,6 +681,10 @@ class Prefs(context: Context) {
             6 -> prefs.getString(APP_PACKAGE_6, "").toString()
             7 -> prefs.getString(APP_PACKAGE_7, "").toString()
             8 -> prefs.getString(APP_PACKAGE_8, "").toString()
+            9 -> prefs.getString(APP_PACKAGE_9, "").toString()
+            10 -> prefs.getString(APP_PACKAGE_10, "").toString()
+            11 -> prefs.getString(APP_PACKAGE_11, "").toString()
+            12 -> prefs.getString(APP_PACKAGE_12, "").toString()
             else -> ""
         }
     }
@@ -571,6 +699,10 @@ class Prefs(context: Context) {
             6 -> prefs.getString(APP_ACTIVITY_CLASS_NAME_6, "").toString()
             7 -> prefs.getString(APP_ACTIVITY_CLASS_NAME_7, "").toString()
             8 -> prefs.getString(APP_ACTIVITY_CLASS_NAME_8, "").toString()
+            9 -> prefs.getString(APP_ACTIVITY_CLASS_NAME_9, "").toString()
+            10 -> prefs.getString(APP_ACTIVITY_CLASS_NAME_10, "").toString()
+            11 -> prefs.getString(APP_ACTIVITY_CLASS_NAME_11, "").toString()
+            12 -> prefs.getString(APP_ACTIVITY_CLASS_NAME_12, "").toString()
             else -> ""
         }
     }
@@ -585,6 +717,10 @@ class Prefs(context: Context) {
             6 -> prefs.getString(APP_USER_6, "").toString()
             7 -> prefs.getString(APP_USER_7, "").toString()
             8 -> prefs.getString(APP_USER_8, "").toString()
+            9 -> prefs.getString(APP_USER_9, "").toString()
+            10 -> prefs.getString(APP_USER_10, "").toString()
+            11 -> prefs.getString(APP_USER_11, "").toString()
+            12 -> prefs.getString(APP_USER_12, "").toString()
             else -> ""
         }
     }
@@ -599,6 +735,10 @@ class Prefs(context: Context) {
             6 -> shortcutId6
             7 -> shortcutId7
             8 -> shortcutId8
+            9 -> shortcutId9
+            10 -> shortcutId10
+            11 -> shortcutId11
+            12 -> shortcutId12
             else -> ""
         }
     }
@@ -613,6 +753,10 @@ class Prefs(context: Context) {
             6 -> isShortcut6
             7 -> isShortcut7
             8 -> isShortcut8
+            9 -> isShortcut9
+            10 -> isShortcut10
+            11 -> isShortcut11
+            12 -> isShortcut12
             else -> false
         }
     }
@@ -627,11 +771,15 @@ class Prefs(context: Context) {
             6 -> appActivityClassName6 = activityClassName
             7 -> appActivityClassName7 = activityClassName
             8 -> appActivityClassName8 = activityClassName
+            9 -> appActivityClassName9 = activityClassName
+            10 -> appActivityClassName10 = activityClassName
+            11 -> appActivityClassName11 = activityClassName
+            12 -> appActivityClassName12 = activityClassName
         }
     }
 
     fun updateAppActivityClassName(packageName: String, activityClassName: String) {
-        for (i in 1..8) {
+        for (i in 1..12) {
             if (getAppPackage(i) == packageName) setAppActivityClassName(i, activityClassName)
         }
         if (clockAppPackage == packageName) clockAppClassName = activityClassName
