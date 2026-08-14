@@ -1,6 +1,8 @@
 package app.olauncher
 
 import android.app.Application
+import android.app.usage.UsageEvents
+import android.app.usage.UsageStatsManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -53,6 +55,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val homeAppAlignment = MutableLiveData<Int>()
     val screenTimeValue = MutableLiveData<String>()
     val appUsageTimes = MutableLiveData<Map<String, AppDailyUsage>>()
+    val unlockCountValue = MutableLiveData<Int>()
 
     data class AppDailyUsage(val timeUsed: Long, val openCount: Int)
 
@@ -537,6 +540,32 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val viewTimeSpent = appContext.formattedTimeSpent(timeSpent)
         screenTimeValue.postValue(viewTimeSpent)
         prefs.screenTimeLastUpdated = endTime
+    }
+
+    fun getTodaysUnlockCount() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return
+        viewModelScope.launch(Dispatchers.Default) {
+            try {
+                val usageStatsManager = appContext.getSystemService("usagestats") as UsageStatsManager
+                // Start of today in millis
+                val calendar = Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, 0)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
+                val events = usageStatsManager.queryEvents(calendar.timeInMillis, System.currentTimeMillis())
+                var count = 0
+                val event = UsageEvents.Event()
+                while (events.hasNextEvent()) {
+                    events.getNextEvent(event)
+                    if (event.eventType == UsageEvents.Event.KEYGUARD_HIDDEN) count++
+                }
+                unlockCountValue.postValue(count)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     fun getTodaysAppUsage() {

@@ -212,6 +212,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         viewModel.appUsageTimes.observe(viewLifecycleOwner) {
             it?.let { applyAppUsageTimes(it) }
         }
+        viewModel.unlockCountValue.observe(viewLifecycleOwner) {
+            it?.let { binding.tvUnlockCount.text = getString(R.string.unlocks_count, it) }
+        }
         // Home button for recents feature disabled
         // viewModel.showRecentApps.observe(viewLifecycleOwner) {
         //     binding.recents.performClick()
@@ -346,6 +349,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             populateScreenTime()
 
         refreshAppUsageTimes()
+        refreshUnlockCount()
 
         val homeAppsNum = prefs.homeAppsNum
         if (homeAppsNum == 0) return
@@ -453,6 +457,13 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             12 -> binding.homeApp12
             else -> null
         }
+    }
+
+    private fun refreshUnlockCount() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
+        val show = prefs.showUnlockCount && requireContext().appUsagePermissionGranted()
+        binding.tvUnlockCount.isVisible = show
+        if (show) viewModel.getTodaysUnlockCount()
     }
 
     private fun refreshAppUsageTimes() {

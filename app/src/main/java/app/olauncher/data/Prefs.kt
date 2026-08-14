@@ -43,6 +43,7 @@ class Prefs(context: Context) {
     private val SHOW_APP_USAGE_TIME = "SHOW_APP_USAGE_TIME"
     private val AUTO_SORT_HOME_APPS = "AUTO_SORT_HOME_APPS"
     private val SHOW_APP_OPEN_COUNT = "SHOW_APP_OPEN_COUNT"
+    private val SHOW_UNLOCK_COUNT = "SHOW_UNLOCK_COUNT"
     private val LAUNCHER_RESTART_TIMESTAMP = "LAUNCHER_RECREATE_TIMESTAMP"
     private val SHOWN_ON_DAY_OF_YEAR = "SHOWN_ON_DAY_OF_YEAR"
     // Home button for recents feature disabled
@@ -250,6 +251,10 @@ class Prefs(context: Context) {
     var showAppOpenCount: Boolean
         get() = prefs.getBoolean(SHOW_APP_OPEN_COUNT, false)
         set(value) = prefs.edit { putBoolean(SHOW_APP_OPEN_COUNT, value).apply() }
+
+    var showUnlockCount: Boolean
+        get() = prefs.getBoolean(SHOW_UNLOCK_COUNT, false)
+        set(value) = prefs.edit { putBoolean(SHOW_UNLOCK_COUNT, value).apply() }
 
     var launcherRestartTimestamp: Long
         get() = prefs.getLong(LAUNCHER_RESTART_TIMESTAMP, 0L)

@@ -77,6 +77,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         populateScreenTimeOnOff()
         populateAppUsageTime()
         populateAppOpenCount()
+        populateUnlockCount()
         populateSortHomeApps()
         populateLockSettings()
         // Home button for recents feature disabled
@@ -119,6 +120,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             R.id.screenTimeOnOff -> viewModel.showDialog.postValue(Constants.Dialog.DIGITAL_WELLBEING)
             R.id.appUsageTime -> toggleAppUsageTime()
             R.id.appOpenCount -> toggleAppOpenCount()
+            R.id.unlockCount -> toggleUnlockCount()
             R.id.sortHomeApps -> toggleSortHomeApps()
             R.id.appInfo -> openAppInfo(requireContext(), Process.myUserHandle(), BuildConfig.APPLICATION_ID)
             R.id.setLauncher -> viewModel.resetLauncherLiveData.call()
@@ -233,6 +235,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.screenTimeOnOff.setOnClickListener(this)
         binding.appUsageTime.setOnClickListener(this)
         binding.appOpenCount.setOnClickListener(this)
+        binding.unlockCount.setOnClickListener(this)
         binding.sortHomeApps.setOnClickListener(this)
         binding.dailyWallpaperUrl.setOnClickListener(this)
         binding.dailyWallpaper.setOnClickListener(this)
@@ -623,6 +626,24 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             if (prefs.showAppOpenCount) binding.appOpenCount.text = getString(R.string.on)
             else binding.appOpenCount.text = getString(R.string.off)
         } else binding.appOpenCountLayout.visibility = View.GONE
+    }
+
+    private fun toggleUnlockCount() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
+        if (prefs.showUnlockCount.not() && requireContext().appUsagePermissionGranted().not()) {
+            viewModel.showDialog.postValue(Constants.Dialog.DIGITAL_WELLBEING)
+            return
+        }
+        prefs.showUnlockCount = !prefs.showUnlockCount
+        populateUnlockCount()
+        viewModel.refreshHome(false)
+    }
+
+    private fun populateUnlockCount() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (prefs.showUnlockCount) binding.unlockCount.text = getString(R.string.on)
+            else binding.unlockCount.text = getString(R.string.off)
+        } else binding.unlockCountLayout.visibility = View.GONE
     }
 
     private fun populateKeyboardText() {
