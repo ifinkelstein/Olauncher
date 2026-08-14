@@ -135,6 +135,30 @@ fun Context.appUsagePermissionGranted(): Boolean {
     ) == AppOpsManager.MODE_ALLOWED
 }
 
+// Daltonizer secure settings; 0 = monochromacy
+private const val DALTONIZER_ENABLED = "accessibility_display_daltonizer_enabled"
+private const val DALTONIZER = "accessibility_display_daltonizer"
+
+fun Context.isSystemGrayscale(): Boolean {
+    return Settings.Secure.getInt(contentResolver, DALTONIZER_ENABLED, 0) == 1 &&
+            Settings.Secure.getInt(contentResolver, DALTONIZER, -1) == 0
+}
+
+// Requires WRITE_SECURE_SETTINGS, grantable only via adb; returns false when not granted
+fun Context.setSystemGrayscale(enable: Boolean): Boolean {
+    return try {
+        if (enable) {
+            Settings.Secure.putInt(contentResolver, DALTONIZER, 0)
+            Settings.Secure.putInt(contentResolver, DALTONIZER_ENABLED, 1)
+        } else {
+            Settings.Secure.putInt(contentResolver, DALTONIZER_ENABLED, 0)
+        }
+        true
+    } catch (e: SecurityException) {
+        false
+    }
+}
+
 fun Context.formattedTimeSpent(timeSpent: Long): String {
     val seconds = timeSpent / 1000
     val minutes = seconds / 60

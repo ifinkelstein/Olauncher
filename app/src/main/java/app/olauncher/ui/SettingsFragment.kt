@@ -31,6 +31,8 @@ import app.olauncher.helper.getColorFromAttr
 import app.olauncher.helper.isAccessServiceEnabled
 import app.olauncher.helper.isDarkThemeOn
 import app.olauncher.helper.isEinkDisplay
+import app.olauncher.helper.isSystemGrayscale
+import app.olauncher.helper.setSystemGrayscale
 import app.olauncher.helper.isCountryIn
 import app.olauncher.helper.isOlauncherDefault
 import app.olauncher.helper.isTablet
@@ -79,6 +81,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         populateAppOpenCount()
         populateUnlockCount()
         populateMindfulPause()
+        populateGrayscale()
         populateSortHomeApps()
         populateLockSettings()
         // Home button for recents feature disabled
@@ -125,6 +128,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             R.id.mindfulPause -> cycleMindfulPause()
             R.id.mindfulApps -> showAppListIfEnabled(Constants.FLAG_TOGGLE_MINDFUL_APP)
             R.id.appBudgets -> showAppListIfEnabled(Constants.FLAG_SET_BUDGET_APP)
+            R.id.grayscale -> toggleGrayscale()
             R.id.sortHomeApps -> toggleSortHomeApps()
             R.id.appInfo -> openAppInfo(requireContext(), Process.myUserHandle(), BuildConfig.APPLICATION_ID)
             R.id.setLauncher -> viewModel.resetLauncherLiveData.call()
@@ -243,6 +247,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.mindfulPause.setOnClickListener(this)
         binding.mindfulApps.setOnClickListener(this)
         binding.appBudgets.setOnClickListener(this)
+        binding.grayscale.setOnClickListener(this)
         binding.sortHomeApps.setOnClickListener(this)
         binding.dailyWallpaperUrl.setOnClickListener(this)
         binding.dailyWallpaper.setOnClickListener(this)
@@ -644,6 +649,22 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         prefs.showUnlockCount = !prefs.showUnlockCount
         populateUnlockCount()
         viewModel.refreshHome(false)
+    }
+
+    private fun toggleGrayscale() {
+        val enable = requireContext().isSystemGrayscale().not()
+        if (requireContext().setSystemGrayscale(enable))
+            populateGrayscale()
+        else
+            requireContext().showToast(
+                getString(R.string.grayscale_permission_message, BuildConfig.APPLICATION_ID),
+                Toast.LENGTH_LONG
+            )
+    }
+
+    private fun populateGrayscale() {
+        binding.grayscale.text =
+            if (requireContext().isSystemGrayscale()) getString(R.string.on) else getString(R.string.off)
     }
 
     private fun cycleMindfulPause() {
