@@ -4,6 +4,29 @@
 # Olauncher | Minimal AF Launcher
 AF stands for Ad-Free! :D
 
+## About this fork
+
+This fork ([ifinkelstein/Olauncher](https://github.com/ifinkelstein/Olauncher)) adds home screen and digital wellbeing features on top of upstream Olauncher.
+
+### Home screen
+
+- Up to 12 apps on the home screen (upstream allows 8).
+- Sort home screen apps A–Z (toggle in settings).
+- Per-app usage time for today shown next to each home screen app (requires usage access permission).
+- Per-app daily open counts shown next to each home screen app.
+- "Now row" under the clock: shows either your next calendar event today (requires calendar permission) or current weather from Open-Meteo (requires location permission; cached 30 min, no API key). Tapping it opens a configurable app. Cycles Off → Calendar → Weather in settings.
+- Adjustable app spacing: Default (density-based) or 0/2/4/6/8/12/16 dp.
+- "Apps to bottom" option to extend the home app list toward the bottom of the screen.
+
+### Wellbeing
+
+Grouped in their own "Wellbeing" settings section:
+
+- Today's unlock count shown under the date.
+- Mindful pause: a countdown (3, 5, or 10 seconds, or off) before flagged apps open, with a cancel option. Flag apps via the "Mindful apps" selector.
+- Daily time budgets per app: cycle 15/30/60/90 minutes per app; when today's usage exceeds the budget, launching shows a warning with an "Open anyway" escape hatch.
+- System grayscale toggle (requires `adb shell pm grant app.olauncher android.permission.WRITE_SECURE_SETTINGS`).
+
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
     alt="Get it on F-Droid"
     height="80">](https://f-droid.org/packages/app.olauncher)
