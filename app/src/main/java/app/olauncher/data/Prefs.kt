@@ -119,6 +119,10 @@ class Prefs(context: Context) {
     private val APP_ACTIVITY_CLASS_NAME_SWIPE_RIGHT = "APP_ACTIVITY_CLASS_NAME_SWIPE_RIGHT"
     private val APP_USER_SWIPE_LEFT = "APP_USER_SWIPE_LEFT"
     private val APP_USER_SWIPE_RIGHT = "APP_USER_SWIPE_RIGHT"
+    private val APP_NAME_DOUBLE_TAP = "APP_NAME_DOUBLE_TAP"
+    private val APP_PACKAGE_DOUBLE_TAP = "APP_PACKAGE_DOUBLE_TAP"
+    private val APP_ACTIVITY_CLASS_NAME_DOUBLE_TAP = "APP_ACTIVITY_CLASS_NAME_DOUBLE_TAP"
+    private val APP_USER_DOUBLE_TAP = "APP_USER_DOUBLE_TAP"
     private val CLOCK_APP_PACKAGE = "CLOCK_APP_PACKAGE"
     private val CLOCK_APP_USER = "CLOCK_APP_USER"
     private val CLOCK_APP_CLASS_NAME = "CLOCK_APP_CLASS_NAME"
@@ -609,6 +613,22 @@ class Prefs(context: Context) {
     var appUserSwipeRight: String
         get() = prefs.getString(APP_USER_SWIPE_RIGHT, "").toString()
         set(value) = prefs.edit { putString(APP_USER_SWIPE_RIGHT, value).apply() }
+
+    var appNameDoubleTap: String
+        get() = prefs.getString(APP_NAME_DOUBLE_TAP, "").toString()
+        set(value) = prefs.edit { putString(APP_NAME_DOUBLE_TAP, value).apply() }
+
+    var appPackageDoubleTap: String
+        get() = prefs.getString(APP_PACKAGE_DOUBLE_TAP, "").toString()
+        set(value) = prefs.edit { putString(APP_PACKAGE_DOUBLE_TAP, value).apply() }
+
+    var appActivityClassNameDoubleTap: String?
+        get() = prefs.getString(APP_ACTIVITY_CLASS_NAME_DOUBLE_TAP, "").toString()
+        set(value) = prefs.edit { putString(APP_ACTIVITY_CLASS_NAME_DOUBLE_TAP, value).apply() }
+
+    var appUserDoubleTap: String
+        get() = prefs.getString(APP_USER_DOUBLE_TAP, "").toString()
+        set(value) = prefs.edit { putString(APP_USER_DOUBLE_TAP, value).apply() }
 
     var clockAppPackage: String
         get() = prefs.getString(CLOCK_APP_PACKAGE, "").toString()

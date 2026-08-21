@@ -91,6 +91,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             Constants.FLAG_TOGGLE_MINDFUL_APP -> toggleMindfulApp(appModel)
             Constants.FLAG_SET_BUDGET_APP -> cycleAppBudget(appModel)
             Constants.FLAG_SET_NOW_ROW_APP -> saveNowRowApp(appModel)
+            Constants.FLAG_SET_DOUBLE_TAP_APP -> saveDoubleTapApp(appModel)
 
             Constants.FLAG_SET_HOME_APP_1 -> saveHomeApp(appModel, 1)
             Constants.FLAG_SET_HOME_APP_2 -> saveHomeApp(appModel, 2)
@@ -642,6 +643,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             prefs.nowRowAppPackage = appModel.appPackage
             prefs.nowRowAppUser = appModel.user.toString()
             prefs.nowRowAppClassName = appModel.activityClassName
+        }
+    }
+
+    private fun saveDoubleTapApp(appModel: AppModel) {
+        if (appModel is AppModel.App) {
+            prefs.appNameDoubleTap = appModel.appLabel
+            prefs.appPackageDoubleTap = appModel.appPackage
+            prefs.appUserDoubleTap = appModel.user.toString()
+            prefs.appActivityClassNameDoubleTap = appModel.activityClassName
+            updateSwipeApps.postValue(Unit)
         }
     }
 

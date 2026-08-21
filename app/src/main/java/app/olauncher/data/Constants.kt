@@ -89,6 +89,7 @@ object Constants {
     const val FLAG_TOGGLE_MINDFUL_APP = 20
     const val FLAG_SET_BUDGET_APP = 21
     const val FLAG_SET_NOW_ROW_APP = 22
+    const val FLAG_SET_DOUBLE_TAP_APP = 23
 
     object NowRow {
         const val OFF = 0

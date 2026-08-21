@@ -82,7 +82,7 @@ class AppDrawerFragment : BaseFragment() {
     private fun initViews() {
         if (flag == Constants.FLAG_HIDDEN_APPS)
             binding.search.queryHint = getString(R.string.hidden_apps)
-        else if (flag in Constants.FLAG_SET_HOME_APP_1..Constants.FLAG_SET_NOW_ROW_APP)
+        else if (flag in Constants.FLAG_SET_HOME_APP_1..Constants.FLAG_SET_DOUBLE_TAP_APP)
             binding.search.queryHint = "Please select an app"
         try {
             searchTextView = binding.search.findViewById(R.id.search_src_text)

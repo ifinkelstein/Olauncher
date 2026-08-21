@@ -196,6 +196,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
 
             R.id.swipeLeftApp -> showAppListIfEnabled(Constants.FLAG_SET_SWIPE_LEFT_APP)
             R.id.swipeRightApp -> showAppListIfEnabled(Constants.FLAG_SET_SWIPE_RIGHT_APP)
+            R.id.doubleTapApp -> showAppListIfEnabled(Constants.FLAG_SET_DOUBLE_TAP_APP)
             R.id.swipeDownAction -> binding.swipeDownSelectLayout.visibility = View.VISIBLE
             R.id.notifications -> updateSwipeDownAction(Constants.SwipeDownAction.NOTIFICATIONS)
             R.id.search -> updateSwipeDownAction(Constants.SwipeDownAction.SEARCH)
@@ -240,6 +241,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
 
             R.id.swipeLeftApp -> toggleSwipeLeft()
             R.id.swipeRightApp -> toggleSwipeRight()
+            R.id.doubleTapApp -> removeDoubleTapApp()
             R.id.toggleLock -> startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         }
         return true
@@ -284,6 +286,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.dateOnly.setOnClickListener(this)
         binding.swipeLeftApp.setOnClickListener(this)
         binding.swipeRightApp.setOnClickListener(this)
+        binding.doubleTapApp.setOnClickListener(this)
         binding.swipeDownAction.setOnClickListener(this)
         binding.search.setOnClickListener(this)
         binding.notifications.setOnClickListener(this)
@@ -325,6 +328,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.appThemeText.setOnLongClickListener(this)
         binding.swipeLeftApp.setOnLongClickListener(this)
         binding.swipeRightApp.setOnLongClickListener(this)
+        binding.doubleTapApp.setOnLongClickListener(this)
         binding.toggleLock.setOnLongClickListener(this)
     }
 
@@ -862,10 +866,22 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
     private fun populateSwipeApps() {
         binding.swipeLeftApp.text = prefs.appNameSwipeLeft
         binding.swipeRightApp.text = prefs.appNameSwipeRight
+        binding.doubleTapApp.text =
+            if (prefs.appPackageDoubleTap.isBlank()) getString(R.string.off)
+            else prefs.appNameDoubleTap
         if (!prefs.swipeLeftEnabled)
             binding.swipeLeftApp.setTextColor(requireContext().getColorFromAttr(R.attr.primaryColorTrans50))
         if (!prefs.swipeRightEnabled)
             binding.swipeRightApp.setTextColor(requireContext().getColorFromAttr(R.attr.primaryColorTrans50))
+    }
+
+    private fun removeDoubleTapApp() {
+        prefs.appNameDoubleTap = ""
+        prefs.appPackageDoubleTap = ""
+        prefs.appActivityClassNameDoubleTap = ""
+        prefs.appUserDoubleTap = ""
+        populateSwipeApps()
+        requireContext().showToast(getString(R.string.double_tap_app_removed))
     }
 
 //    private fun populateDigitalWellbeing() {

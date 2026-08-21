@@ -189,6 +189,8 @@
     <string name="open_count_suffix" translatable="false">%1$dx</string>
     <string name="sort_apps_a_z">Sort apps A–Z</string>
     <string name="recent_apps">Recent apps</string>
+    <string name="double_tap_app">Double tap</string>
+    <string name="double_tap_app_removed">Double tap app removed</string>
     <string name="app_name_with_usage" translatable="false">%1$s · %2$s</string>
     <string name="learn_more">Learn more</string>
     <string name="did_you_know">Did you know?</string>

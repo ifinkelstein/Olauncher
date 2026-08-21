@@ -858,6 +858,15 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
 
             override fun onDoubleClick() {
                 super.onDoubleClick()
+                if (prefs.appPackageDoubleTap.isNotBlank()) {
+                    launchApp(
+                        prefs.appNameDoubleTap,
+                        prefs.appPackageDoubleTap,
+                        prefs.appActivityClassNameDoubleTap,
+                        prefs.appUserDoubleTap
+                    )
+                    return
+                }
                 if (!prefs.lockModeOn) return
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
                     binding.lock.performClick()
