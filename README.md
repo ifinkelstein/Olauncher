@@ -18,6 +18,7 @@ This fork ([ifinkelstein/Olauncher](https://github.com/ifinkelstein/Olauncher)) 
 - Per-app usage time for today shown next to each home screen app (requires usage access permission).
 - Per-app daily open counts shown next to each home screen app.
 - "Now row" under the clock: shows either your next calendar event today (requires calendar permission) or current weather from Open-Meteo (requires location permission; cached 30 min, no API key). Tapping it opens a configurable app. Cycles Off → Calendar → Weather in settings.
+- Recent apps in the app drawer: the N most recently launched apps appear at the top of the app list, most recent first (Off/3/5/7 in settings, default 5). Hidden while searching.
 - Adjustable app spacing: Default (density-based) or 0/2/4/6/8/12/16 dp.
 - "Apps to bottom" option to extend the home app list toward the bottom of the screen.
 

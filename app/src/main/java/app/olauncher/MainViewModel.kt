@@ -161,7 +161,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private fun launchNow(appModel: AppModel) {
         when (appModel) {
             is AppModel.PinnedShortcut -> launchShortcut(appModel)
-            is AppModel.App -> launchApp(appModel.appPackage, appModel.activityClassName, appModel.user)
+            is AppModel.App -> {
+                prefs.recordAppLaunch(appModel.appPackage, appModel.user.toString())
+                launchApp(appModel.appPackage, appModel.activityClassName, appModel.user)
+            }
+
             else -> {}
         }
     }

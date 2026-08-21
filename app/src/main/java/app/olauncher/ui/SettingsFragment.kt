@@ -94,6 +94,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         populateNowRow()
         populateAppSpacing()
         populateAppsToBottom()
+        populateRecentApps()
         populateSortHomeApps()
         populateLockSettings()
         // Home button for recents feature disabled
@@ -145,6 +146,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             R.id.nowRow -> cycleNowRow()
             R.id.appSpacing -> cycleAppSpacing()
             R.id.appsToBottom -> toggleAppsToBottom()
+            R.id.recentApps -> cycleRecentApps()
             R.id.appInfo -> openAppInfo(requireContext(), Process.myUserHandle(), BuildConfig.APPLICATION_ID)
             R.id.setLauncher -> viewModel.resetLauncherLiveData.call()
             R.id.toggleLock -> toggleLockMode()
@@ -267,6 +269,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.nowRow.setOnClickListener(this)
         binding.appSpacing.setOnClickListener(this)
         binding.appsToBottom.setOnClickListener(this)
+        binding.recentApps.setOnClickListener(this)
         binding.dailyWallpaperUrl.setOnClickListener(this)
         binding.dailyWallpaper.setOnClickListener(this)
         binding.alignment.setOnClickListener(this)
@@ -693,6 +696,22 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
     private fun populateAppsToBottom() {
         binding.appsToBottom.text =
             if (prefs.extendHomeAppsToBottom) getString(R.string.on) else getString(R.string.off)
+    }
+
+    private fun cycleRecentApps() {
+        prefs.recentAppsNum = when (prefs.recentAppsNum) {
+            0 -> 3
+            3 -> 5
+            5 -> 7
+            else -> 0
+        }
+        populateRecentApps()
+    }
+
+    private fun populateRecentApps() {
+        binding.recentApps.text =
+            if (prefs.recentAppsNum == 0) getString(R.string.off)
+            else prefs.recentAppsNum.toString()
     }
 
     private fun cycleNowRow() {

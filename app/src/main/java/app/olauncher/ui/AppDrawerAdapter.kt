@@ -45,6 +45,7 @@ class AppDrawerAdapter(
             override fun areItemsTheSame(oldItem: AppModel, newItem: AppModel): Boolean = when {
                 oldItem is AppModel.App && newItem is AppModel.App ->
                     oldItem.appPackage == newItem.appPackage && oldItem.user == newItem.user
+                            && oldItem.isRecent == newItem.isRecent
 
                 oldItem is AppModel.PinnedShortcut && newItem is AppModel.PinnedShortcut ->
                     oldItem.shortcutId == newItem.shortcutId && oldItem.user == newItem.user
@@ -135,9 +136,12 @@ class AppDrawerAdapter(
                 isBangSearch = charSearch?.startsWith("!") ?: false
                 autoLaunch = allowAutoLaunch && (charSearch?.startsWith(" ")?.not() ?: true)
 
+                // Recent-app rows are duplicates of regular entries; hide them while searching
                 val appFilteredList = (if (charSearch.isNullOrBlank()) appsList
                 else appsList.filter { app ->
-                    app !is AppModel.PrivateSpaceHeader && appLabelMatches(app.appLabel, charSearch)
+                    app !is AppModel.PrivateSpaceHeader
+                            && !(app is AppModel.App && app.isRecent)
+                            && appLabelMatches(app.appLabel, charSearch)
                 } as MutableList<AppModel>)
 
                 val filterResults = FilterResults()

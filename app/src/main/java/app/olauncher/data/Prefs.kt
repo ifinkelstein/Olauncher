@@ -49,6 +49,8 @@ class Prefs(context: Context) {
     private val BUDGETED_APPS = "BUDGETED_APPS"
     private val NOW_ROW_MODE = "NOW_ROW_MODE"
     private val HOME_APP_SPACING_DP = "HOME_APP_SPACING_DP"
+    private val RECENT_APPS_NUM = "RECENT_APPS_NUM"
+    private val RECENT_APPS_HISTORY = "RECENT_APPS_HISTORY"
     private val EXTEND_HOME_APPS_TO_BOTTOM = "EXTEND_HOME_APPS_TO_BOTTOM"
     private val NOW_ROW_APP_PACKAGE = "NOW_ROW_APP_PACKAGE"
     private val NOW_ROW_APP_USER = "NOW_ROW_APP_USER"
@@ -286,6 +288,24 @@ class Prefs(context: Context) {
         val budgeted = mutableSetOf<String>().apply { addAll(budgetedApps) }
         if (minutes > 0) budgeted.add(appPackage) else budgeted.remove(appPackage)
         budgetedApps = budgeted
+    }
+
+    var recentAppsNum: Int
+        get() = prefs.getInt(RECENT_APPS_NUM, 5)
+        set(value) = prefs.edit { putInt(RECENT_APPS_NUM, value).apply() }
+
+    // Most-recent-first "package|user" entries, ';'-separated
+    var recentAppsHistory: List<String>
+        get() = prefs.getString(RECENT_APPS_HISTORY, "").orEmpty().split(";").filter { it.isNotBlank() }
+        private set(value) = prefs.edit { putString(RECENT_APPS_HISTORY, value.joinToString(";")).apply() }
+
+    fun recordAppLaunch(appPackage: String, user: String) {
+        if (appPackage.isBlank()) return
+        val entry = "$appPackage|$user"
+        val history = recentAppsHistory.toMutableList()
+        history.remove(entry)
+        history.add(0, entry)
+        recentAppsHistory = history.take(20)
     }
 
     var nowRowMode: Int

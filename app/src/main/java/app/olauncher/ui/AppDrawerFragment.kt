@@ -294,6 +294,16 @@ class AppDrawerFragment : BaseFragment() {
         val apps = currentAppList ?: return
         val combined = apps.toMutableList()
 
+        if (flag == Constants.FLAG_LAUNCH_APP && prefs.recentAppsNum > 0) {
+            val byKey = apps.filterIsInstance<AppModel.App>()
+                .associateBy { it.appPackage + "|" + it.user.toString() }
+            val recents = prefs.recentAppsHistory
+                .mapNotNull { byKey[it] }
+                .take(prefs.recentAppsNum)
+                .map { it.copy(isRecent = true) }
+            combined.addAll(0, recents)
+        }
+
         if (flag == Constants.FLAG_LAUNCH_APP && currentPrivateSpaceAvailable) {
             combined.add(AppModel.PrivateSpaceHeader(isLocked = currentPrivateSpaceLocked))
             if (!currentPrivateSpaceLocked) {
