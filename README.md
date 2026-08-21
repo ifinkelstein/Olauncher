@@ -4,6 +4,9 @@
 # Olauncher | Minimal AF Launcher
 AF stands for Ad-Free! :D
 
+> [!WARNING]
+> **Fully vibecoded.** All fork features were written by an AI coding agent (Claude Code) with minimal human review. Use at your own risk.
+
 ## About this fork
 
 This fork ([ifinkelstein/Olauncher](https://github.com/ifinkelstein/Olauncher)) adds home screen and digital wellbeing features on top of upstream Olauncher.
