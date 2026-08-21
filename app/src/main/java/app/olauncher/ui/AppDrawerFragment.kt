@@ -1,6 +1,8 @@
 package app.olauncher.ui
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.os.Build
 import android.os.Bundle
 import android.os.Process
@@ -25,6 +27,7 @@ import app.olauncher.data.Constants
 import app.olauncher.data.Prefs
 import app.olauncher.databinding.FragmentAppDrawerBinding
 import app.olauncher.helper.deletePinnedShortcut
+import app.olauncher.helper.getColorFromAttr
 import app.olauncher.helper.hideKeyboard
 import app.olauncher.helper.isEinkDisplay
 import app.olauncher.helper.isSystemAnimationsDisabled
@@ -252,6 +255,7 @@ class AppDrawerFragment : BaseFragment() {
 
         binding.recyclerView.layoutManager = linearLayoutManager
         binding.recyclerView.adapter = adapter
+        binding.recyclerView.addItemDecoration(recentAppsDivider())
         binding.recyclerView.addOnScrollListener(getRecyclerViewOnScrollListener())
         binding.recyclerView.itemAnimator = null
         if (requireContext().isEinkDisplay().not() && requireContext().isSystemAnimationsDisabled().not())
@@ -339,6 +343,39 @@ class AppDrawerFragment : BaseFragment() {
                 Constants.FLAG_SET_HOME_APP_12 -> prefs.appName12 = name
             }
             findNavController().popBackStack()
+        }
+    }
+
+    // Thin line under the last recent-apps row, separating it from the A-Z list
+    private fun recentAppsDivider(): RecyclerView.ItemDecoration {
+        val density = resources.displayMetrics.density
+        val paint = Paint().apply {
+            strokeWidth = density // 1dp hairline
+            color = requireContext().getColorFromAttr(R.attr.primaryColorTrans50)
+        }
+        val horizontalInset = 24 * density
+        return object : RecyclerView.ItemDecoration() {
+            override fun onDrawOver(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+                for (i in 0 until parent.childCount) {
+                    val child = parent.getChildAt(i)
+                    val position = parent.getChildAdapterPosition(child)
+                    if (position == RecyclerView.NO_POSITION) continue
+                    val item = adapter.appFilteredList.getOrNull(position)
+                    val next = adapter.appFilteredList.getOrNull(position + 1)
+                    val isLastRecent = item is AppModel.App && item.isRecent
+                            && !(next is AppModel.App && next.isRecent)
+                    if (isLastRecent) {
+                        val y = child.bottom + child.translationY
+                        canvas.drawLine(
+                            child.left + horizontalInset,
+                            y,
+                            child.right - horizontalInset,
+                            y,
+                            paint
+                        )
+                    }
+                }
+            }
         }
     }
 
