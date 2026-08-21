@@ -521,6 +521,29 @@ fun openCalendar(context: Context) {
     }
 }
 
+private val WEATHER_APP_PACKAGES = arrayOf(
+    "com.google.android.apps.weather", // Pixel Weather
+    "com.sec.android.daemonapp", // Samsung Weather
+    "com.miui.weather2", // Xiaomi Weather
+    "net.oneplus.weather", // OnePlus Weather
+    "com.oneplus.weather",
+    "org.breezyweather", // Breezy Weather
+    "com.accuweather.android",
+)
+
+fun openWeatherApp(context: Context) {
+    for (weatherPackage in WEATHER_APP_PACKAGES) {
+        val intent = context.packageManager.getLaunchIntentForPackage(weatherPackage) ?: continue
+        try {
+            context.startActivity(intent)
+            return
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+    context.openUrl("https://www.google.com/search?q=weather")
+}
+
 fun isAccessServiceEnabled(context: Context): Boolean {
     val enabled = try {
         Settings.Secure.getInt(context.applicationContext.contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED)

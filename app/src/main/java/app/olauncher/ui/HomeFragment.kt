@@ -43,6 +43,7 @@ import app.olauncher.helper.openCalendar
 import app.olauncher.helper.openCameraApp
 import app.olauncher.helper.openDialerApp
 import app.olauncher.helper.openSearch
+import app.olauncher.helper.openWeatherApp
 import app.olauncher.helper.setPlainWallpaperByTheme
 import app.olauncher.helper.showToast
 import app.olauncher.listener.OnSwipeTouchListener
@@ -506,6 +507,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             )
 
             prefs.nowRowMode == Constants.NowRow.CALENDAR -> openCalendarApp()
+            prefs.nowRowMode == Constants.NowRow.WEATHER -> openWeatherApp(requireContext())
             else -> showLongPressToast()
         }
     }
