@@ -17,7 +17,7 @@ This fork ([ifinkelstein/Olauncher](https://github.com/ifinkelstein/Olauncher)) 
 - Sort home screen apps A–Z (toggle in settings).
 - Per-app usage time for today shown next to each home screen app (requires usage access permission).
 - Per-app daily open counts shown next to each home screen app.
-- "Now row" under the clock: shows either your next calendar event today (requires calendar permission) or current weather from Open-Meteo (requires location permission; cached 30 min, no API key). Tapping it opens the configured app if one is set (long-press to choose), otherwise the calendar app in calendar mode or an installed weather app (web forecast as fallback) in weather mode. Cycles Off → Calendar → Weather in settings.
+- "Now row" under the clock: shows either your next calendar event today (requires calendar permission) or current weather from Open-Meteo (requires location permission; cached 30 min, no API key) with a condition emoji and, when precipitation is likely later today, an upcoming rain/snow hint like "🌧️ ~15:00". Tapping it opens the configured app if one is set (long-press to choose), otherwise the calendar app in calendar mode or an installed weather app (web forecast as fallback) in weather mode. Cycles Off → Calendar → Weather in settings.
 - Recent apps in the app drawer: the N most recently launched apps appear at the top of the app list, most recent first (Off/3/5/7 in settings, default 5). Hidden while searching.
 - Double tap gesture: double-tapping the home screen launches a configurable app ("Double tap" row in gesture settings; long-press the row to remove). With no app set, double tap falls back to the double-tap-to-lock behavior.
 - Adjustable app spacing: Default (density-based) or 0/2/4/6/8/12/16 dp.

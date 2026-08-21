@@ -90,6 +90,7 @@ fun Context.getWeatherNow(prefs: Prefs): String? {
         val url = "https://api.open-meteo.com/v1/forecast" +
                 "?latitude=${location.latitude}&longitude=${location.longitude}" +
                 "&current_weather=true&daily=temperature_2m_max,temperature_2m_min" +
+                "&hourly=precipitation_probability,weathercode" +
                 "&forecast_days=1&timezone=auto$unitParam"
 
         val connection = URL(url).openConnection() as HttpURLConnection
@@ -106,7 +107,9 @@ fun Context.getWeatherNow(prefs: Prefs): String? {
         val min = daily.getJSONArray("temperature_2m_min").getDouble(0).roundToInt()
         val max = daily.getJSONArray("temperature_2m_max").getDouble(0).roundToInt()
 
-        val text = "$temp° · $min–$max° · ${weatherCodeToText(code)}"
+        val precipHint = upcomingPrecipitationHint(json, code)
+        val text = "$temp° · $min–$max° · ${weatherCodeToEmoji(code)} ${weatherCodeToText(code)}" +
+                (precipHint?.let { " · $it" } ?: "")
         prefs.nowWeatherCache = text
         prefs.nowWeatherCachedAt = System.currentTimeMillis()
         text
@@ -114,6 +117,46 @@ fun Context.getWeatherNow(prefs: Prefs): String? {
         e.printStackTrace()
         prefs.nowWeatherCache.ifEmpty { null }
     }
+}
+
+// First upcoming hour today with likely precipitation, e.g. "🌧️ ~15:00".
+// Skipped when it is already precipitating now.
+private fun upcomingPrecipitationHint(json: JSONObject, currentCode: Int): String? {
+    if (isPrecipitationCode(currentCode)) return null
+    return try {
+        val hourly = json.getJSONObject("hourly")
+        val times = hourly.getJSONArray("time")
+        val probabilities = hourly.getJSONArray("precipitation_probability")
+        val codes = hourly.getJSONArray("weathercode")
+        val nowHour = SimpleDateFormat("yyyy-MM-dd'T'HH:00", Locale.US).format(Date())
+        for (i in 0 until times.length()) {
+            val time = times.getString(i)
+            if (time < nowHour) continue
+            if (probabilities.optInt(i) < 50) continue
+            val emoji = if (codes.optInt(i) in 71..77 || codes.optInt(i) in 85..86) "🌨️" else "🌧️"
+            return "$emoji ~${time.substringAfter('T')}"
+        }
+        null
+    } catch (e: Exception) {
+        null
+    }
+}
+
+private fun isPrecipitationCode(code: Int): Boolean =
+    code in 51..67 || code in 71..77 || code in 80..86 || code in 95..99
+
+private fun weatherCodeToEmoji(code: Int): String = when (code) {
+    0 -> "☀️"
+    1, 2 -> "⛅"
+    3 -> "☁️"
+    45, 48 -> "🌫️"
+    in 51..57 -> "🌦️"
+    in 61..67 -> "🌧️"
+    in 71..77 -> "❄️"
+    in 80..82 -> "🌦️"
+    85, 86 -> "🌨️"
+    in 95..99 -> "⛈️"
+    else -> "🌡️"
 }
 
 private fun weatherCodeToText(code: Int): String = when (code) {
